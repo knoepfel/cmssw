@@ -1,4 +1,4 @@
-#ifndef UtilAlgos_StringCutObjectSelector_h
+i#ifndef UtilAlgos_StringCutObjectSelector_h
 #define UtilAlgos_StringCutObjectSelector_h
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "CommonTools/UtilAlgos/interface/ParameterAdapter.h"
@@ -10,7 +10,7 @@ namespace reco {
     template<typename T, bool Lazy>
     struct ParameterAdapter<StringCutObjectSelector<T, Lazy> > {
       static StringCutObjectSelector<T, Lazy> make( const edm::ParameterSet & cfg, edm::ConsumesCollector & iC ) {
-	return StringCutObjectSelector<T, Lazy>( cfg.template getParameter<std::string>( "cut" ) );
+        return StringCutObjectSelector<T, Lazy>( cfg.template getParameter<std::string>( "cut" ) );
       }
     };
 
@@ -33,4 +33,3 @@ namespace reco{
 }
 
 #endif
-
