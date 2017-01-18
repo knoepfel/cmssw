@@ -1,4 +1,4 @@
-i#ifndef UtilAlgos_StringCutObjectSelector_h
+#ifndef UtilAlgos_StringCutObjectSelector_h
 #define UtilAlgos_StringCutObjectSelector_h
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "CommonTools/UtilAlgos/interface/ParameterAdapter.h"

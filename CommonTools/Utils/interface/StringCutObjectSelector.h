@@ -14,20 +14,20 @@
 
 template<typename T, bool DefaultLazyness=false>
 struct StringCutObjectSelector {
-  StringCutObjectSelector(const std::string & cut, bool lazy=DefaultLazyness) : 
+  StringCutObjectSelector(const std::string & cut, bool lazy=DefaultLazyness) :
     type_(typeid(T)) {
     if(! reco::parser::cutParser<T>(cut, select_, lazy)) {
       throw edm::Exception(edm::errors::Configuration,
-			   "failed to parse \"" + cut + "\"");
+                           "failed to parse \"" + cut + "\"");
     }
   }
-  StringCutObjectSelector(const reco::parser::SelectorPtr & select) : 
+  StringCutObjectSelector(const reco::parser::SelectorPtr & select) :
     select_(select),
     type_(typeid(T)) {
   }
   bool operator()(const T & t) const {
     edm::ObjectWithDict o(type_, const_cast<T *>(& t));
-    return (*select_)(o);  
+    return (*select_)(o);
   }
 
 private:

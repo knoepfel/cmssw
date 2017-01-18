@@ -36,19 +36,19 @@ public:
   using ConstituentsOutput = C;
 
   JetConstituentSelector(edm::ParameterSet const& params) :
-    srcToken_{consumes<typename edm::View<T>>(params.getParameter<edm::InputTag>("src"))},
+    srcToken_{consumes<edm::View<T>>(params.getParameter<edm::InputTag>("src"))},
     selector_{params.getParameter<std::string>("cut")}
   {
     produces<JetsOutput>();
     produces<ConstituentsOutput>("constituents");
   }
 
-  bool filter(edm::Event& iEvent, const edm::EventSetup& iSetup) override
+  bool filter(edm::Event& iEvent, edm::EventSetup const& iSetup) override
   {
     auto jets = std::make_unique<JetsOutput>();
     auto candsOut = std::make_unique<ConstituentsOutput>();
 
-    edm::Handle<typename edm::View<T>> h_jets;
+    edm::Handle<edm::View<T>> h_jets;
     iEvent.getByToken(srcToken_, h_jets);
 
     // Now set the Ptrs with the orphan handles.
@@ -57,23 +57,20 @@ public:
       if (selector_(jet)) {
         // Add the jets that pass to the output collection
         jets->push_back(jet);
-        for (unsigned int ida = 0; ida < jet.numberOfDaughters(); ++ida) {
+        for (unsigned int ida {}; ida < jet.numberOfDaughters(); ++ida) {
           candsOut->emplace_back(jet.daughterPtr(ida), jet.daughterPtr(ida));
         }
       }
     }
 
-    // put  in Event
     iEvent.put(std::move(jets));
     iEvent.put(std::move(candsOut), "constituents");
-
     return true;
   }
 
-protected:
-  edm::EDGetTokenT<typename edm::View<T>> srcToken_;
-  StringCutObjectSelector<T> selector_;
-
+private:
+  edm::EDGetTokenT<edm::View<T>> const srcToken_;
+  StringCutObjectSelector<T> const selector_;
 };
 
 using PFJetConstituentSelector = JetConstituentSelector<reco::PFJet>;
