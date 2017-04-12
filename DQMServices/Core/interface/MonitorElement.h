@@ -65,9 +65,9 @@ public:
 private:
   DQMNet::CoreObject data_;       //< Core object information.
   Scalar scalar_;                 //< Current scalar value.
-  TH1* object_;                   //< Current ROOT object value.
-  TH1* reference_;                //< Current ROOT reference object.
-  TH1* refvalue_;                 //< Soft reference if any.
+  TH1* object_{nullptr};          //< Current ROOT object value.
+  TH1* reference_{nullptr};       //< Current ROOT reference object.
+  TH1* refvalue_{nullptr};        //< Soft reference if any.
   std::vector<QReport> qreports_; //< QReports associated to this object.
 
   MonitorElement* initialise(Kind kind);
@@ -120,16 +120,16 @@ public:
     { return *data_.dirname; }
 
   /// get full name of ME including Pathname
-  const std::string getFullname() const
-    {
-      std::string path;
-      path.reserve(data_.dirname->size() + data_.objname.size() + 2);
-      path += *data_.dirname;
-      if (! data_.dirname->empty())
-        path += '/';
-      path += data_.objname;
-      return path;
-    }
+  std::string getFullname() const
+  {
+    std::string path;
+    path.reserve(data_.dirname->size() + data_.objname.size() + 2);
+    path += *data_.dirname;
+    if (!data_.dirname->empty())
+      path += '/';
+    path += data_.objname;
+    return path;
+  }
 
   /// true if ME was updated in last monitoring cycle
   bool wasUpdated() const
@@ -216,7 +216,7 @@ public:
 
   void Fill(float x) { Fill(static_cast<double>(x)); }
   void Fill(double x);
-  void Fill(std::string& value);
+  void Fill(std::string const& value);
 
   void Fill(double x, double yw);
   void Fill(double x, double y, double zw);

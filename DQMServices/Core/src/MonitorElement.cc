@@ -148,9 +148,6 @@ MonitorElement* MonitorElement::initialise(Kind kind, const std::string& value)
 }
 
 MonitorElement::MonitorElement()
-  : object_(nullptr),
-    reference_(nullptr),
-    refvalue_(nullptr)
 {
   data_.version  = 0;
   data_.dirname  = nullptr;
@@ -165,12 +162,9 @@ MonitorElement::MonitorElement()
 }
 
 MonitorElement::MonitorElement(const std::string* path, const std::string& name,
-                               uint32_t run /* = 0 */,
-                               uint32_t streamId /* = 0 */,
-                               uint32_t moduleId /* = 0 */)
-  : object_(nullptr),
-    reference_(nullptr),
-    refvalue_(nullptr)
+                               uint32_t const run /* = 0 */,
+                               uint32_t const streamId /* = 0 */,
+                               uint32_t const moduleId /* = 0 */)
 {
   data_.version = 0;
   data_.run = run;
@@ -223,8 +217,8 @@ MonitorElement::~MonitorElement()
 bool MonitorElement::CheckBinLabels(const TAxis* a1, const TAxis* a2)
 {
   // check that axis have same labels
-  THashList* l1 = (const_cast<TAxis*>(a1))->GetLabels();
-  THashList* l2 = (const_cast<TAxis*>(a2))->GetLabels();
+  THashList* l1 = a1->GetLabels();
+  THashList* l2 = a2->GetLabels();
 
   if (!l1 && !l2)
     return true;
@@ -246,7 +240,7 @@ bool MonitorElement::CheckBinLabels(const TAxis* a1, const TAxis* a2)
 }
 
 /// "Fill" ME methods for string
-void MonitorElement::Fill(std::string& value)
+void MonitorElement::Fill(std::string const& value)
 {
   update();
   if (kind() == DQM_KIND_STRING)
@@ -1176,7 +1170,7 @@ void MonitorElement::addProfiles(TProfile* h1, TProfile* h2, TProfile* sum,
   assert(h2);
   assert(sum);
 
-  static const Int_t NUM_STAT = 6;
+  static constexpr Int_t NUM_STAT {6};
   Double_t stats1[NUM_STAT];
   Double_t stats2[NUM_STAT];
   Double_t stats3[NUM_STAT];
@@ -1225,7 +1219,7 @@ void MonitorElement::addProfiles(TProfile2D* h1, TProfile2D* h2,
   assert(h2);
   assert(sum);
 
-  static const Int_t NUM_STAT = 9;
+  static constexpr Int_t NUM_STAT {9};
   Double_t stats1[NUM_STAT];
   Double_t stats2[NUM_STAT];
   Double_t stats3[NUM_STAT];

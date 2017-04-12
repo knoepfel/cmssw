@@ -7,16 +7,17 @@
 #include "classlib/utils/Signal.h"
 #include "classlib/utils/Error.h"
 #include "classlib/utils/Time.h"
+
 #include <pthread.h>
 #include <cstdint>
 #include <csignal>
 #include <iostream>
-#include <vector>
-#include <string>
 #include <list>
 #include <map>
 #include <set>
-#include <ext/hash_set>
+#include <string>
+#include <unordered_set>
+#include <vector>
 
 //class DQMStore;
 
@@ -170,22 +171,20 @@ public:
 
   static bool setOrder(CoreObject const& a, CoreObject const& b)
   {
-    if (a.run == b.run) {
-      if (a.lumi == b.lumi) {
-        if (a.streamId == b.streamId) {
-          if (a.moduleId == b.moduleId) {
-            if (*a.dirname == *b.dirname) {
-              return a.objname < b.objname;
-            }
-            return *a.dirname < *b.dirname;
-          }
-          return a.moduleId < b.moduleId;
-        }
-        return a.streamId < b.streamId;
-      }
-      return a.lumi < b.lumi;
-    }
-    return a.run < b.run;
+    auto const& atup = std::tie(a.streamId,
+                                a.moduleId,
+                                a.run,
+                                a.lumi,
+                                *a.dirname,
+                                a.objname);
+
+    auto const& btup = std::tie(b.streamId,
+                                b.moduleId,
+                                b.run,
+                                b.lumi,
+                                *b.dirname,
+                                b.objname);
+    return atup < btup;
   }
 
   struct HashOp {
@@ -381,10 +380,9 @@ public:
   struct ImplPeer;
 
   using DirMap = std::set<std::string>;
-  typedef __gnu_cxx::hash_set<ObjType, HashOp, HashEqual> ObjectMap;
-  typedef std::map<lat::Socket* , ImplPeer> PeerMap;
-  struct ImplPeer : Peer
-  {
+  using ObjectMap = std::unordered_set<ObjType, HashOp, HashEqual>;
+  using PeerMap = std::map<lat::Socket*, ImplPeer>;
+  struct ImplPeer : Peer {
     ImplPeer() = default;
     ObjectMap objs;
     DirMap dirs;
