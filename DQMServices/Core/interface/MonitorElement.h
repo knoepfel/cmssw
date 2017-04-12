@@ -31,54 +31,54 @@
 class QCriterion;
 
 // tag for a special constructor, see below
-struct MonitorElementNoCloneTag {};
+struct MonitorElementNoCloneTag {
+};
 
 /** The base class for all MonitorElements (ME) */
-class MonitorElement
-{
+class MonitorElement {
   friend class DQMStore;
   friend class DQMService;
+
 public:
-  struct Scalar
-  {
-    int64_t             num;
-    double              real;
-    std::string         str;
+  struct Scalar {
+    int64_t num;
+    double real;
+    std::string str;
   };
 
-  enum Kind
-  {
-    DQM_KIND_INVALID    = DQMNet::DQM_PROP_TYPE_INVALID,
-    DQM_KIND_INT        = DQMNet::DQM_PROP_TYPE_INT,
-    DQM_KIND_REAL       = DQMNet::DQM_PROP_TYPE_REAL,
-    DQM_KIND_STRING     = DQMNet::DQM_PROP_TYPE_STRING,
-    DQM_KIND_TH1F       = DQMNet::DQM_PROP_TYPE_TH1F,
-    DQM_KIND_TH1S       = DQMNet::DQM_PROP_TYPE_TH1S,
-    DQM_KIND_TH1D       = DQMNet::DQM_PROP_TYPE_TH1D,
-    DQM_KIND_TH2F       = DQMNet::DQM_PROP_TYPE_TH2F,
-    DQM_KIND_TH2S       = DQMNet::DQM_PROP_TYPE_TH2S,
-    DQM_KIND_TH2D       = DQMNet::DQM_PROP_TYPE_TH2D,
-    DQM_KIND_TH3F       = DQMNet::DQM_PROP_TYPE_TH3F,
-    DQM_KIND_TPROFILE   = DQMNet::DQM_PROP_TYPE_TPROF,
+  enum Kind {
+    DQM_KIND_INVALID = DQMNet::DQM_PROP_TYPE_INVALID,
+    DQM_KIND_INT = DQMNet::DQM_PROP_TYPE_INT,
+    DQM_KIND_REAL = DQMNet::DQM_PROP_TYPE_REAL,
+    DQM_KIND_STRING = DQMNet::DQM_PROP_TYPE_STRING,
+    DQM_KIND_TH1F = DQMNet::DQM_PROP_TYPE_TH1F,
+    DQM_KIND_TH1S = DQMNet::DQM_PROP_TYPE_TH1S,
+    DQM_KIND_TH1D = DQMNet::DQM_PROP_TYPE_TH1D,
+    DQM_KIND_TH2F = DQMNet::DQM_PROP_TYPE_TH2F,
+    DQM_KIND_TH2S = DQMNet::DQM_PROP_TYPE_TH2S,
+    DQM_KIND_TH2D = DQMNet::DQM_PROP_TYPE_TH2D,
+    DQM_KIND_TH3F = DQMNet::DQM_PROP_TYPE_TH3F,
+    DQM_KIND_TPROFILE = DQMNet::DQM_PROP_TYPE_TPROF,
     DQM_KIND_TPROFILE2D = DQMNet::DQM_PROP_TYPE_TPROF2D
   };
 
 private:
-  DQMNet::CoreObject    data_;       //< Core object information.
-  Scalar                scalar_;     //< Current scalar value.
-  TH1                   *object_;    //< Current ROOT object value.
-  TH1                   *reference_; //< Current ROOT reference object.
-  TH1                   *refvalue_;  //< Soft reference if any.
-  std::vector<QReport>  qreports_;   //< QReports associated to this object.
+  DQMNet::CoreObject data_;       //< Core object information.
+  Scalar scalar_;                 //< Current scalar value.
+  TH1* object_;                   //< Current ROOT object value.
+  TH1* reference_;                //< Current ROOT reference object.
+  TH1* refvalue_;                 //< Soft reference if any.
+  std::vector<QReport> qreports_; //< QReports associated to this object.
 
-  MonitorElement *initialise(Kind kind);
-  MonitorElement *initialise(Kind kind, TH1 *rootobj);
-  MonitorElement *initialise(Kind kind, const std::string &value);
-  void globalize() {
+  MonitorElement* initialise(Kind kind);
+  MonitorElement* initialise(Kind kind, TH1* rootobj);
+  MonitorElement* initialise(Kind kind, const std::string& value);
+  void globalize()
+  {
     data_.streamId = 0;
     data_.moduleId = 0;
   }
-  void setLumi(uint32_t ls) {data_.lumi = ls;}
+  void setLumi(uint32_t ls) { data_.lumi = ls; }
 
 public:
   MonitorElement();
@@ -95,13 +95,13 @@ public:
   ~MonitorElement();
 
   /// Compare monitor elements, for ordering in sets.
-  bool operator<(const MonitorElement &x) const
-    {
-      return DQMNet::setOrder(data_, x.data_);
-    }
+  bool operator<(const MonitorElement& x) const
+  {
+    return DQMNet::setOrder(data_, x.data_);
+  }
 
   /// Check the consistency of the axis labels
-  static bool CheckBinLabels(const TAxis* a1, const TAxis * a2);
+  static bool CheckBinLabels(const TAxis* a1, const TAxis* a2);
 
   /// Get the type of the monitor element.
   Kind kind() const
@@ -139,10 +139,10 @@ public:
   void update()
     { data_.flags |= DQMNet::DQM_PROP_NEW; }
 
-  /// specify whether ME should be reset at end of monitoring cycle (default:false);
+  /// specify whether ME should be reset at end of monitoring cycle
+  /// (default:false);
   /// (typically called by Sources that control the original ME)
-  void setResetMe(bool /* flag */)
-    { data_.flags |= DQMNet::DQM_PROP_RESET; }
+  void setResetMe(bool /* flag */) { data_.flags |= DQMNet::DQM_PROP_RESET; }
 
   /// true if ME is meant to be stored for each luminosity section
   bool getLumiFlag() const
@@ -159,26 +159,64 @@ public:
 
   // A static assert to check that T actually fits in
   // int64_t.
-  template <typename T>
-  struct fits_in_int64_t
-  {
+  template <typename T> struct fits_in_int64_t {
     int checkArray[sizeof(int64_t) - sizeof(T) + 1];
   };
 
-  void Fill(long long x) { fits_in_int64_t<long long>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(unsigned long long x) { fits_in_int64_t<unsigned long long>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(unsigned long x) { fits_in_int64_t<unsigned long>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(long x) { fits_in_int64_t<long>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(unsigned int x) { fits_in_int64_t<unsigned int>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(int x) { fits_in_int64_t<int>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(short x) { fits_in_int64_t<short>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(unsigned short x) { fits_in_int64_t<unsigned short>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(char x) { fits_in_int64_t<char>(); doFill(static_cast<int64_t>(x)); }
-  void Fill(unsigned char x) { fits_in_int64_t<unsigned char>(); doFill(static_cast<int64_t>(x)); }
+  void Fill(long long x)
+  {
+    fits_in_int64_t<long long>();
+    doFill(static_cast<int64_t>(x));
+  }
+  void Fill(unsigned long long x)
+  {
+    fits_in_int64_t<unsigned long long>();
+    doFill(static_cast<int64_t>(x));
+  }
+  void Fill(unsigned long x)
+  {
+    fits_in_int64_t<unsigned long>();
+    doFill(static_cast<int64_t>(x));
+  }
+  void Fill(long x)
+  {
+    fits_in_int64_t<long>();
+    doFill(static_cast<int64_t>(x));
+  }
+  void Fill(unsigned int x)
+  {
+    fits_in_int64_t<unsigned int>();
+    doFill(static_cast<int64_t>(x));
+  }
+  void Fill(int x)
+  {
+    fits_in_int64_t<int>();
+    doFill(static_cast<int64_t>(x));
+  }
+  void Fill(short x)
+  {
+    fits_in_int64_t<short>();
+    doFill(static_cast<int64_t>(x));
+  }
+  void Fill(unsigned short x)
+  {
+    fits_in_int64_t<unsigned short>();
+    doFill(static_cast<int64_t>(x));
+  }
+  void Fill(char x)
+  {
+    fits_in_int64_t<char>();
+    doFill(static_cast<int64_t>(x));
+  }
+  void Fill(unsigned char x)
+  {
+    fits_in_int64_t<unsigned char>();
+    doFill(static_cast<int64_t>(x));
+  }
 
-  void Fill(float x)    { Fill(static_cast<double>(x)); }
+  void Fill(float x) { Fill(static_cast<double>(x)); }
   void Fill(double x);
-  void Fill(std::string &value);
+  void Fill(std::string& value);
 
   void Fill(double x, double yw);
   void Fill(double x, double y, double zw);
@@ -211,8 +249,9 @@ public:
   bool isEfficiency() const
     { return data_.flags & DQMNet::DQM_PROP_EFFICIENCY_PLOT; }
 
-  /// get QReport corresponding to <qtname> (null pointer if QReport does not exist)
-  const QReport *getQReport(const std::string &qtname) const;
+  /// get QReport corresponding to <qtname> (null pointer if QReport does not
+  /// exist)
+  const QReport* getQReport(const std::string& qtname) const;
 
   /// get map of QReports
   std::vector<QReport *> getQReports() const;
@@ -232,8 +271,8 @@ public:
 
 private:
   void doFill(int64_t x);
-  void incompatible(const char *func) const;
-  TH1 *accessRootObject(const char *func, int reqdim) const;
+  void incompatible(const char* func) const;
+  TH1* accessRootObject(const char* func, int reqdim) const;
 
 public:
 #if DQM_ROOT_METHODS
@@ -268,17 +307,18 @@ public:
   void setBinError(int binx, int biny, int binz, double error);
   void setBinEntries(int bin, double nentries);
   void setEntries(double nentries);
-  void setBinLabel(int bin, const std::string &label, int axis = 1);
+  void setBinLabel(int bin, const std::string& label, int axis = 1);
   void setAxisRange(double xmin, double xmax, int axis = 1);
-  void setAxisTitle(const std::string &title, int axis = 1);
+  void setAxisTitle(const std::string& title, int axis = 1);
   void setAxisTimeDisplay(int value, int axis = 1);
-  void setAxisTimeFormat(const char *format = "", int axis = 1);
+  void setAxisTimeFormat(const char* format = "", int axis = 1);
 
 private:
-  void setAxisTimeOffset(double toffset, const char *option="local", int axis = 1);
+  void setAxisTimeOffset(double toffset, const char* option = "local",
+                         int axis = 1);
 
 public:
-  void setTitle(const std::string &title);
+  void setTitle(const std::string& title);
 #endif // DQM_ROOT_METHODS
 
 private:
@@ -311,9 +351,11 @@ private:
   /// if true, will accumulate ME contents (over many periods)
   /// until method is called with flag = false again
   void setAccumulate(bool /* flag */)
-    { data_.flags |= DQMNet::DQM_PROP_ACCUMULATE; }
+  {
+    data_.flags |= DQMNet::DQM_PROP_ACCUMULATE;
+  }
 
-  TAxis *getAxis(const char *func, int axis) const;
+  TAxis* getAxis(const char* func, int axis) const;
 
   // ------------ Operations for MEs that are normally never reset ---------
 public:
