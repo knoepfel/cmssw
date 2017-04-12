@@ -45,8 +45,8 @@ class DQMFileSaverBase
   };
 
  protected:
-  //virtual void beginJob(void) const override final;
-  //virtual void endJob(void) const override final;
+  //virtual void beginJob() const override final;
+  //virtual void endJob() const override final;
 
   std::shared_ptr<NoCache> globalBeginRun(
       const edm::Run &, const edm::EventSetup &) const final;

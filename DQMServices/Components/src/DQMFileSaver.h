@@ -24,7 +24,7 @@ public:
       int run, int lumi, const std::string &dataFilePathName, const std::string& transferDestinationStr,
       const std::string& mergeTypeStr, evf::FastMonitoringService *fms);
 
-  
+
 protected:
   void beginJob() override;
   std::shared_ptr<saverDetails::NoCache> globalBeginRun(const edm::Run &, const edm::EventSetup &) const override;

@@ -7,7 +7,7 @@
  *
  *  \author Andreas Meyer CERN
  *  \author Jan Olzem DESY
- *   
+ *
  */
 
 #include <string>
@@ -83,11 +83,11 @@ class Iterator {
 };
 
 template <class Item>
-class VIterator : public Iterator<Item> 
+class VIterator : public Iterator<Item>
 {
   public:
     VIterator(const std::vector<Item>* aVector):vector_(aVector),index(0) {}
-    ~VIterator() override = default; 
+    ~VIterator() override = default;
     void First() override     {index=0;}
     void Next() override      { ++index;}
     virtual int  size()      { return vector_->size();}
@@ -126,8 +126,8 @@ public:
   ~Folder() {
     for(auto & subfolder : subfolders_)
       delete subfolder;
-  }	
-  
+  }
+
   void setFather(Folder* e) {father_ = e;}
   Folder * getFather() {return father_;}
   const std::string & name()  {return folderName_;}
@@ -145,8 +145,8 @@ public:
   unsigned int id()  {return id_;}
   void setLevel(unsigned int value) {level_=value;}
   unsigned int level() {return level_;}
-  
-  
+
+
   void add(Folder * f) {
     f->setFather(this);
     subfolders_.push_back(f);
@@ -178,21 +178,21 @@ public:
       result += subfolder->getMemory();
     return result;
   }
-  void update(unsigned int bins, 
-                      unsigned int empty, 
+  void update(unsigned int bins,
+                      unsigned int empty,
                       unsigned int memory) {
     totalHistos_    += 1;
     totalBins_      += bins;
     totalEmptyBins_ += empty;
     totalMemory_    += memory;
   }
-  void dump(std::string indent)                     
+  void dump(std::string indent)
     {
       indent.append(" ");
       std::cout << indent << "I'm a " << name() << " whose father is " << getFather()
                 << " with ID: " << id_
                 << " Histo: " << getHistos() << " Bins: " << getBins()
-                << " EmptyBins: " << getEmptyBins() << " Memory: " << getMemory()  
+                << " EmptyBins: " << getEmptyBins() << " Memory: " << getMemory()
                 << " and my children are: " << std::endl;
       for(auto & subfolder : subfolders_)
         subfolder->dump(indent) ;
@@ -265,7 +265,7 @@ public:
     {
       std::stringstream s("");
       s << "INSERT INTO summary(counter, total_count, total_freq, tick_period) VALUES (\"BINS_LIVE\","
-        << getMemory() << "," << getBins() << ", 1);\n"; 
+        << getMemory() << "," << getBins() << ", 1);\n";
       sql_statement.append(s.str());
     }
 
@@ -299,7 +299,7 @@ public:
   enum statsMode { considerAllME = 0, considerOnlyLumiProductME = 1 };
 
 protected:
-   
+
   // BeginJob
   void beginJob() override;
 
@@ -309,11 +309,11 @@ protected:
   // Fake Analyze
   void analyze(const edm::Event& e, const edm::EventSetup& c) override;
 
-  void beginLuminosityBlock(const edm::LuminosityBlock& lumiSeg, 
+  void beginLuminosityBlock(const edm::LuminosityBlock& lumiSeg,
                             const edm::EventSetup& context) override;
 
   // DQM Client Diagnostic
-  void endLuminosityBlock(const edm::LuminosityBlock& lumiSeg, 
+  void endLuminosityBlock(const edm::LuminosityBlock& lumiSeg,
                           const edm::EventSetup& c) override;
 
   // EndRun
@@ -329,7 +329,7 @@ private:
   void dumpMemoryProfile( );
   std::pair<unsigned int, unsigned int> readMemoryEntry( ) const;
   void print();
-  
+
   DQMStore* dbe_;
   edm::ParameterSet parameters_;
 
@@ -347,7 +347,7 @@ private:
   int statsdepth_ ;
   std::string pathnamematch_ ;
   int verbose_ ;
-  
+
   std::vector<std::pair<time_t, unsigned int> > memoryHistoryVector_;
   time_t startingTime_;
   bool isOpenProcFileSuccessful_;
@@ -365,4 +365,3 @@ private:
 };
 
 #endif
-

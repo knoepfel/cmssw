@@ -23,6 +23,7 @@ class DQMTestMultiThread
   void dumpMe(MonitorElement const&, bool printStat = false);
 
  private:
+  DQMTestMultiThread() = delete;
   MonitorElement * myHisto;
   std::string folder_;
   double fill_value_;

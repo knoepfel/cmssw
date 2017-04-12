@@ -2,10 +2,10 @@
 //
 // Package:    DQMServices/CoreROOT
 // Class:      DQMStoreQTestsExample
-// 
+//
 /**\class DQMStoreQTestsExample
 
-Description: Simple example that fills monitoring elements and 
+Description: Simple example that fills monitoring elements and
              compares them to reference
 
 Implementation:
@@ -47,14 +47,14 @@ class DQMStoreQTestsExample : public edm::EDAnalyzer {
 public:
   explicit DQMStoreQTestsExample( const edm::ParameterSet& );
   ~DQMStoreQTestsExample() override;
-  
+
   void analyze( const edm::Event&, const edm::EventSetup& ) override;
-  
+
   void endJob() override;
 
 private:
   // ----------member data ---------------------------
-  
+
   // the test objects
   MonitorElement * h1;
   MonitorElement * int1;
@@ -81,8 +81,8 @@ private:
   MeanWithinExpected * meanNear_test; // mean-within-expected test
   // MostProbableLandau *poMPLandau_test_;
   // contents within z-range tests
-  // ContentsTH2FWithinRange * zrangeh2f_test; 
-  // ContentsProfWithinRange * zrangeprof_test; 
+  // ContentsTH2FWithinRange * zrangeh2f_test;
+  // ContentsProfWithinRange * zrangeprof_test;
   // ContentsProf2DWithinRange * zrangeprof2d_test;
 
   // use <ref> as the reference for the quality tests
@@ -119,16 +119,16 @@ DQMStoreQTestsExample::DQMStoreQTestsExample(const edm::ParameterSet& iConfig ) 
   intRef1 = dbe->bookInt("int1Ref");
 
 
-  testh2f = dbe->book2D("testh2f", "testh2f histo", NBINS/10, XMIN, XMAX, 
-			NBINS/10, XMIN, XMAX);
+  testh2f = dbe->book2D("testh2f", "testh2f histo", NBINS/10, XMIN, XMAX,
+                        NBINS/10, XMIN, XMAX);
   // profile histogram
-  testprof = dbe->bookProfile("testprof", "testprof histo", 
-			      NBINS/10, XMIN, XMAX, NBINS/10, XMIN, XMAX);
+  testprof = dbe->bookProfile("testprof", "testprof histo",
+                              NBINS/10, XMIN, XMAX, NBINS/10, XMIN, XMAX);
   // 2D profile histogram
-  testprof2d = dbe->bookProfile2D("testprof2d", "testprof2d histo", 
-				  NBINS/10, XMIN, XMAX, NBINS/10, XMIN, XMAX,
-				  NBINS/10, XMIN, XMAX);
-  
+  testprof2d = dbe->bookProfile2D("testprof2d", "testprof2d histo",
+                                  NBINS/10, XMIN, XMAX, NBINS/10, XMIN, XMAX,
+                                  NBINS/10, XMIN, XMAX);
+
   mean_ = (XMIN + XMAX)/2.0;
   sigma_ = (XMAX - XMIN)/6.0;
 
@@ -138,7 +138,7 @@ DQMStoreQTestsExample::DQMStoreQTestsExample(const edm::ParameterSet& iConfig ) 
   // fill in reference histogram with random data
   for(unsigned i = 0; i != 10000; ++i)
     href->Fill(gRandom->Gaus(mean_, sigma_));
-  
+
   // instantiate the quality tests
   chi2_test = new Comp2RefChi2("my_chi2");
   ks_test = new Comp2RefKolmogorov("my_kolm");
@@ -152,7 +152,7 @@ DQMStoreQTestsExample::DQMStoreQTestsExample(const edm::ParameterSet& iConfig ) 
   //zrangeprof_test = new ContentsProfWithinRange("zrangeprof");
   //zrangeprof2d_test = new ContentsProf2DWithinRange("zrangeprof2d");
   //poMPLandau_test_ = new MostProbableLandau( "mplandau");
-  
+
   // set reference for chi2, ks tests
   setReference(href);
   // set allowed range to [10, 90]% of nominal
@@ -182,7 +182,7 @@ void DQMStoreQTestsExample::setReference(MonitorElement * ref)
 {
 // FIXME, need to use reference in proper location /Reference here
 //  if(chi2_test)chi2_test->setReference(ref);
-//  if(ks_test)ks_test->setReference(ref);  
+//  if(ks_test)ks_test->setReference(ref);
 //  if(equalH_test)equalH_test->setReference(ref);
 }
 
@@ -209,7 +209,7 @@ DQMStoreQTestsExample::~DQMStoreQTestsExample()
 void DQMStoreQTestsExample::endJob()
 {
   setReference(nullptr);
-  
+
   // attempt to run tests w/o a reference histogram
   runTests(dqm::qstatus::INVALID, "tests w/o reference");
 
@@ -264,12 +264,12 @@ void DQMStoreQTestsExample::endJob()
 // run quality tests; expected_status: test status that is expected
 // (see Core/interface/QTestStatus.h)
 // test_type: info message on what kind of tests are run
-void DQMStoreQTestsExample::runTests(int expected_status, 
-					    const string& test_type)
+void DQMStoreQTestsExample::runTests(int expected_status,
+                                            const string& test_type)
 {
   cout << " ========================================================== " << endl;
   cout << " Results of attempt to run " << test_type << ", expected status " << expected_status << endl;
-  
+
   chi2_test->runTest(h1);
   checkTest(chi2_test);
 
@@ -317,11 +317,11 @@ void DQMStoreQTestsExample::runTests(int expected_status,
   status = chi2_test->getStatus();
   if (expected_status && status != expected_status)
     cout << "ERROR: Comp2RefChi2 test expected status " << expected_status
-	 << ", got " << status << endl;
+         << ", got " << status << endl;
   status = ks_test->getStatus();
   if (expected_status && status != expected_status)
     cout << "ERROR: Comp2RefKolmogorov test expected status " << expected_status
-	 << ", got " << status << endl;
+         << ", got " << status << endl;
 
   status = xrange_test->getStatus();
   // there is no "INVALID" result when running "contents within x-range" test
@@ -329,7 +329,7 @@ void DQMStoreQTestsExample::runTests(int expected_status,
       && expected_status != dqm::qstatus::INVALID
       && expected_status != status)
     cout << "ERROR: ContentsXRange test expected status " << expected_status
-	 << ", got " << status << endl;
+         << ", got " << status << endl;
 
   status = yrange_test->getStatus();
   // there is no "INVALID" result when running "contents within y-range" test
@@ -337,7 +337,7 @@ void DQMStoreQTestsExample::runTests(int expected_status,
       && expected_status != dqm::qstatus::INVALID
       && expected_status != status)
     cout << "ERROR: ContentsYRange test expected status " << expected_status
-	 << ", got " << status << endl;
+         << ", got " << status << endl;
 
   status = deadChan_test->getStatus();
   // there is no "INVALID" result when running "dead channel" test
@@ -345,7 +345,7 @@ void DQMStoreQTestsExample::runTests(int expected_status,
       && expected_status != dqm::qstatus::INVALID
       && expected_status != status)
     cout << "ERROR: DeadChannel test expected status " << expected_status
-	 << ", got " << status << endl;
+         << ", got " << status << endl;
 
   status = noisyChan_test->getStatus();
   // there is no "INVALID" result when running "noisy channel" test
@@ -353,76 +353,76 @@ void DQMStoreQTestsExample::runTests(int expected_status,
       && expected_status != dqm::qstatus::INVALID
       && expected_status != status)
     cout << "ERROR: NoisyChannel test expected status " << expected_status
-	 << ", got " << status << endl;
+         << ", got " << status << endl;
 
   status = meanNear_test->getStatus();
   if (expected_status && expected_status != status)
     cout << "ERROR: MeanWithinExpected test expected status " << expected_status
-	 << ", got " << status << endl;
+         << ", got " << status << endl;
 
   //status = poMPLandau_test_->getStatus();
   //if (expected_status && expected_status != status)
   //  cout << "ERROR: MostProbableLandau test expected status " << expected_status
-  //	 << ", got " << status << endl;
+  //     << ", got " << status << endl;
 
   status = equalH_test->getStatus();
   if (expected_status && expected_status != status)
     cout << "ERROR: Comp2RefEqualH test expected status " << expected_status
-	 << ", got " << status << endl;
+         << ", got " << status << endl;
 
   //status = zrangeh2f_test->getStatus();
   // if (expected_status && expected_status != status)
   //  cout << "ERROR: Comp2RefEqualInt test expected status " <<  expected_status
-  //	 << ", got " << status << endl;
+  //     << ", got " << status << endl;
 
   //status = zrangeprof_test->getStatus();
   // if (expected_status && expected_status != status)
   //  cout << "ERROR: ContentsProfWithinRange test expected status " << expected_status
-  //	   << ", got " << status << endl;
+  //       << ", got " << status << endl;
 
   //status = zrangeprof2d_test->getStatus();
   // if (expected_status && expected_status != status)
   //  cout << "ERROR: ContentsProf2DWithinRange test expected status " << expected_status
-  //	   << ", got " << status << endl;
+  //       << ", got " << status << endl;
 }
 
 // called by runTests; return status
 int DQMStoreQTestsExample::checkTest(QCriterion *qc)
 {
   if(!qc)return -1;
-  
+
   int status = qc->getStatus();
-  cout << " Test name: " << qc->getName() << " (Algorithm: " 
-	    << qc->algoName() << "), Result:"; 
-  
+  cout << " Test name: " << qc->getName() << " (Algorithm: "
+            << qc->algoName() << "), Result:";
+
   switch(status)
     {
-    case dqm::qstatus::STATUS_OK: 
+    case dqm::qstatus::STATUS_OK:
       cout << " Status ok " << endl;
       break;
-    case dqm::qstatus::WARNING: 
+    case dqm::qstatus::WARNING:
       cout << " Warning " << endl;
       break;
-    case dqm::qstatus::ERROR : 
+    case dqm::qstatus::ERROR :
       cout << " Error " << endl;
       break;
-    case dqm::qstatus::DISABLED : 
+    case dqm::qstatus::DISABLED :
       cout << " Disabled " << endl;
       break;
-    case dqm::qstatus::INVALID: 
+    case dqm::qstatus::INVALID:
       cout << " Invalid " << endl;
       break;
-    case dqm::qstatus::INSUF_STAT: 
+    case dqm::qstatus::INSUF_STAT:
       cout << " Not enough statistics " << endl;
       break;
 
     default:
       cout << " Unknown (status = " << status << ") " << endl;
     }
-  
+
   string message = qc->getMessage();
   cout << " Message:" << message << endl;
-  
+
   return status;
 }
 
@@ -434,17 +434,17 @@ int DQMStoreQTestsExample::checkTest(QCriterion *qc)
 void DQMStoreQTestsExample::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
   // fill in test histogram with random data
-  h1->Fill(gRandom->Gaus(mean_, sigma_)); 
+  h1->Fill(gRandom->Gaus(mean_, sigma_));
 
-  testh2f->Fill(gRandom->Gaus(mean_, sigma_), 
-		gRandom->Gaus(mean_, sigma_));
+  testh2f->Fill(gRandom->Gaus(mean_, sigma_),
+                gRandom->Gaus(mean_, sigma_));
 
-  testprof->Fill(gRandom->Gaus(mean_, sigma_), 
-		 TMath::Abs(gRandom->Gaus(mean_, sigma_)));
+  testprof->Fill(gRandom->Gaus(mean_, sigma_),
+                 TMath::Abs(gRandom->Gaus(mean_, sigma_)));
 
-  testprof2d->Fill(gRandom->Gaus(mean_, sigma_), 
-		   gRandom->Gaus(mean_, sigma_), 
-		   TMath::Abs(gRandom->Gaus(mean_, sigma_)));
+  testprof2d->Fill(gRandom->Gaus(mean_, sigma_),
+                   gRandom->Gaus(mean_, sigma_),
+                   TMath::Abs(gRandom->Gaus(mean_, sigma_)));
 
   poMPLandauH1_->Fill( gRandom->Landau( dLandauMP_, dLandauSigma_));
 
@@ -457,7 +457,7 @@ void DQMStoreQTestsExample::showBadChannels(QCriterion *qc)
   vector<dqm::me_util::Channel> badChannels = qc->getBadChannels();
   if(!badChannels.empty())
     cout << " Channels that failed test " << qc->algoName() << ":\n";
-  
+
   auto it = badChannels.begin();
   while(it != badChannels.end())
     {
@@ -465,8 +465,8 @@ void DQMStoreQTestsExample::showBadChannels(QCriterion *qc)
            << it->getBinX() << ","
            << it->getBinY() << ","
            << it->getBinZ()
-	   << ") Contents: " << it->getContents() << " +- " 
-	   << it->getRMS() << endl;
+           << ") Contents: " << it->getContents() << " +- "
+           << it->getRMS() << endl;
 
       ++it;
     }
@@ -475,4 +475,3 @@ void DQMStoreQTestsExample::showBadChannels(QCriterion *qc)
 
 // define this as a plug-in
 DEFINE_FWK_MODULE(DQMStoreQTestsExample);
-

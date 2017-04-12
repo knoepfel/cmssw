@@ -72,7 +72,7 @@ namespace thread_unsafe {
       void beginRun(edm::Run const &, edm::EventSetup const&) final;
       virtual void dqmBeginRun(edm::Run const&, edm::EventSetup const&) {}
       virtual void bookHistograms(DQMStore::IBooker &i, edm::Run const&, edm::EventSetup const&) = 0;
-      
+
     private:
     };
 } //thread_unsafe namespace

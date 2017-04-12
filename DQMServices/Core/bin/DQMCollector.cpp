@@ -13,9 +13,9 @@
 #include <cstdlib>
 
 static const int FATAL_OPTS = (lat::Signal::FATAL_DEFAULT
-			       & ~(lat::Signal::FATAL_ON_INT
-				   | lat::Signal::FATAL_ON_QUIT
-				   | lat::Signal::FATAL_DUMP_CORE));
+                               & ~(lat::Signal::FATAL_ON_INT
+                                   | lat::Signal::FATAL_ON_QUIT
+                                   | lat::Signal::FATAL_DUMP_CORE));
 
 volatile sig_atomic_t s_stop = 0;
 static void
@@ -31,7 +31,7 @@ public:
     {
       return s_stop != 0;
     }
-  
+
   DQMCollector(char *appname, int port, bool debugging)
     : DQMBasicNet (appname)
     {

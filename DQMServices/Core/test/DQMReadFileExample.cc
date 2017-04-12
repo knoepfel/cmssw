@@ -2,7 +2,7 @@
 //
 // Package:    DQMServices/CoreROOT
 // Class:      DQMReadFileExample
-// 
+//
 /**\class DQMReadFileExample
 
 Description: Simple example showing how to read MonitorElements from ROOT file
@@ -39,17 +39,17 @@ class DQMReadFileExample : public edm::EDAnalyzer {
 public:
   explicit DQMReadFileExample( const edm::ParameterSet& );
   ~DQMReadFileExample() override;
-  
+
   void analyze( const edm::Event&, const edm::EventSetup& ) override;
-  
+
   void endJob() override;
 
 private:
   // ----------member data ---------------------------
-  
+
   // back-end interface
   DQMStore * dbe;
-  
+
   // remove all MonitorElements and directories
   void removeAll();
 };
@@ -57,7 +57,7 @@ private:
 //
 // constructors and destructor
 //
-DQMReadFileExample::DQMReadFileExample(const edm::ParameterSet& iConfig ) 
+DQMReadFileExample::DQMReadFileExample(const edm::ParameterSet& iConfig )
 {
   // get hold of back-end interface
   dbe = edm::Service<DQMStore>().operator->();
@@ -85,7 +85,7 @@ DQMReadFileExample::~DQMReadFileExample()
 {
   // do anything here that needs to be done at desctruction time
   // (e.g. close files, deallocate resources etc.)
-  
+
 }
 
 // remove all MonitorElements and directories
@@ -105,7 +105,7 @@ void DQMReadFileExample::removeAll()
 void DQMReadFileExample::endJob()
 {
   dbe->showDirStructure();
-  // dbe->save("test.root");  
+  // dbe->save("test.root");
 }
 
 
@@ -114,12 +114,11 @@ void DQMReadFileExample::endJob()
 //
 
 // ------------ method called to produce the data  ------------
-void DQMReadFileExample::analyze(const edm::Event& iEvent, 
-					 const edm::EventSetup& iSetup )
+void DQMReadFileExample::analyze(const edm::Event& iEvent,
+                                         const edm::EventSetup& iSetup )
 {
 
 }
 
 // define this as a plug-in
 DEFINE_FWK_MODULE(DQMReadFileExample);
-

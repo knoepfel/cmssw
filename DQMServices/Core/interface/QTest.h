@@ -453,7 +453,7 @@ public:
   {
     setAlgoName(getAlgoName());
   }
-  static std::string getAlgoName(void) { return "RuleAllContentWithinFixedRange"; }
+  static std::string getAlgoName() { return "RuleAllContentWithinFixedRange"; }
   float runTest(const MonitorElement *me);
 
   void set_x_min(double x)             { x_min  = x; }
@@ -461,10 +461,10 @@ public:
   void set_epsilon_max(double epsilon) { epsilon_max = epsilon; }
   void set_S_fail(double S)            { S_fail = S; }
   void set_S_pass(double S)            { S_pass = S; }
-  double get_epsilon_obs(void)         { return epsilon_obs; }
-  double get_S_fail_obs(void)          { return S_fail_obs;  }
-  double get_S_pass_obs(void)          { return S_pass_obs;  }
-  int get_result(void)                 { return result; }
+  double get_epsilon_obs()         { return epsilon_obs; }
+  double get_S_fail_obs()          { return S_fail_obs;  }
+  double get_S_pass_obs()          { return S_pass_obs;  }
+  int get_result()                 { return result; }
 
 protected:
   TH1F *histogram ; //define Test histo
@@ -484,16 +484,16 @@ public:
   {
     setAlgoName(getAlgoName());
   }
-  static std::string getAlgoName(void) { return "RuleAllContentWithinFloatingRange"; }
+  static std::string getAlgoName() { return "RuleAllContentWithinFloatingRange"; }
 
   void set_Nrange(int N)               { Nrange = N; }
   void set_epsilon_max(double epsilon) { epsilon_max = epsilon; }
   void set_S_fail(double S)            { S_fail = S; }
   void set_S_pass(double S)            { S_pass = S; }
-  double get_epsilon_obs(void)         { return epsilon_obs; }
-  double get_S_fail_obs(void)          { return S_fail_obs;  }
-  double get_S_pass_obs(void)          { return S_pass_obs;  }
-  int get_result(void)                 { return result; }
+  double get_epsilon_obs()         { return epsilon_obs; }
+  double get_S_fail_obs()          { return S_fail_obs;  }
+  double get_S_pass_obs()          { return S_pass_obs;  }
+  int get_result()                 { return result; }
 
   float runTest(const MonitorElement *me );
 
@@ -520,20 +520,20 @@ public:
     setAlgoName(getAlgoName());
   }
 
-  ~FlatOccupancy1d(void)
+  ~FlatOccupancy1d()
   {
     delete [] FailedBins[0];
     delete [] FailedBins[1];
   }
 
-  static std::string getAlgoName(void) { return "RuleFlatOccupancy1d"; }
+  static std::string getAlgoName() { return "RuleFlatOccupancy1d"; }
 
   void set_ExclusionMask(double *mask) { ExclusionMask = mask; }
   void set_epsilon_min(double epsilon) { epsilon_min = epsilon; }
   void set_epsilon_max(double epsilon) { epsilon_max = epsilon; }
   void set_S_fail(double S)            { S_fail = S; }
   void set_S_pass(double S)            { S_pass = S; }
-  double get_FailedBins(void)          { return *FailedBins[1]; } // FIXME: WRONG! OFF BY ONE!?
+  double get_FailedBins()          { return *FailedBins[1]; } // FIXME: WRONG! OFF BY ONE!?
   int get_result()                     { return result; }
 
   float runTest(const MonitorElement*me);
@@ -717,7 +717,7 @@ public:
   {
     setAlgoName(getAlgoName());
   }
-  static std::string getAlgoName(void) { return "RuleAllContentAlongDiagonal"; }
+  static std::string getAlgoName() { return "RuleAllContentAlongDiagonal"; }
 
   void set_epsilon_max(double epsilon) { epsilon_max = epsilon; }
   void set_S_fail(double S)            { S_fail = S; }

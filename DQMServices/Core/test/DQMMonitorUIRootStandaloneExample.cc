@@ -2,10 +2,10 @@
 //
 // Package:    DQMServices/CoreROOT
 // Class:      DQMStandaloneExample
-// 
+//
 /**\class DQMStandaloneExample
 
-Description: Simple example that fills monitoring elements and 
+Description: Simple example that fills monitoring elements and
              compares them to reference
 
 Implementation:
@@ -41,7 +41,7 @@ using std::cout; using std::endl;
 using std::string; using std::vector;
 
 const int sample_int_value = 5;
-const float XMIN = -3; 
+const float XMIN = -3;
 const float XMAX = 3;
 //
 // class declaration
@@ -51,14 +51,14 @@ class DQMStandaloneExample : public edm::EDAnalyzer {
 public:
   explicit DQMStandaloneExample( const edm::ParameterSet& );
   ~DQMStandaloneExample() override;
-  
+
   void analyze( const edm::Event&, const edm::EventSetup& ) override;
-  
+
   void endJob() override;
 
 private:
   // ----------member data ---------------------------
-  
+
   // the test objects
   MonitorElement * h1;
   MonitorElement * int1;
@@ -107,13 +107,13 @@ void DQMStandaloneExample::createMonitorElements()
   const int NBINS = 50;
   h1 = dbe->book1D("histo_1", "Example 1D histogram.", NBINS, XMIN, XMAX );
   href = dbe->book1D("href", "Reference histogram", NBINS, XMIN, XMAX );
-  
+
   int1 = dbe->bookInt("int1");
   intRef1 = dbe->bookInt("int1Ref");
-  
+
   mean_ = (XMIN + XMAX)/2.0;
   sigma_ = (XMAX - XMIN)/6.0;
-  
+
   // fill in reference histogram with random data
   for(unsigned i = 0; i != 10000; ++i)
     href->Fill(gRandom->Gaus(mean_, sigma_));
@@ -135,7 +135,7 @@ void DQMStandaloneExample::createQualityTests()
   auto it = testNames.begin();
 
   // create the quality tests
-  chi2_test = dynamic_cast<Comp2RefChi2 *> 
+  chi2_test = dynamic_cast<Comp2RefChi2 *>
     (dbe->createQTest(Comp2RefChi2::getAlgoName(), *it) );
   dbe->useQTestByMatch("histo_1", *it);
 
@@ -198,7 +198,7 @@ void DQMStandaloneExample::tuneCuts()
 
   // fill in test integer
   int1->Fill(sample_int_value);
-  
+
 }
 
 
@@ -209,9 +209,9 @@ DQMStandaloneExample::DQMStandaloneExample(const edm::ParameterSet& iConfig ) : 
   dbe = edm::Service<DQMStore>().operator->();
 
   createMonitorElements();
-  
+
   createQualityTests();
- 
+
   tuneCuts();
 
 }
@@ -221,7 +221,7 @@ void DQMStandaloneExample::setReference(MonitorElement * ref)
 {
 // FIXME, need to use reference in proper location /Reference here
 //  if(chi2_test)chi2_test->setReference(ref);
-//  if(ks_test)ks_test->setReference(ref);  
+//  if(ks_test)ks_test->setReference(ref);
 //  if(equalH_test)equalH_test->setReference(ref);
 }
 
@@ -251,7 +251,7 @@ void DQMStandaloneExample::runTests()
       break;
     case dqm::qstatus::OTHER:
       cout << " Some tests did not run;";
-      break; 
+      break;
     default:
       cout << " No problems";
     }
@@ -259,36 +259,36 @@ void DQMStandaloneExample::runTests()
   //
   if(h1)
     {
-  
+
       // get all warnings associated with me
       vector<QReport *> warnings = h1->getQWarnings();
       for(auto it = warnings.begin();
-	  it != warnings.end(); ++it)
-	cout << " *** Warning for " << h1->getName() << "," 
-	     << (*it)->getMessage() << endl;
+          it != warnings.end(); ++it)
+        cout << " *** Warning for " << h1->getName() << ","
+             << (*it)->getMessage() << endl;
       // get all errors associated with me
       vector<QReport *> errors = h1->getQErrors();
       for(auto it = errors.begin();
-	  it != errors.end(); ++it)
-	cout << " *** Error for " << h1->getName() << ","
-	     << (*it)->getMessage() << endl;
-      
+          it != errors.end(); ++it)
+        cout << " *** Error for " << h1->getName() << ","
+             << (*it)->getMessage() << endl;
+
       cout << " ============================================= " << endl;
       cout << "         All messages for quality tests " << endl;
       cout << " ============================================= " << endl;
-      for(auto it = testNames.begin(); 
-	  it != testNames.end(); ++it)
-	{
-	  string test_message;
-	  const QReport * qr = h1->getQReport(*it);
-	  if(!qr && int1)
-	    qr = int1->getQReport(*it);
+      for(auto it = testNames.begin();
+          it != testNames.end(); ++it)
+        {
+          string test_message;
+          const QReport * qr = h1->getQReport(*it);
+          if(!qr && int1)
+            qr = int1->getQReport(*it);
 
-	  if(qr)
-	    cout << qr->getMessage() << endl;
-	  else
-	    cout << " **** Oops, report " << *it << " does not exist" << endl;
-	}
+          if(qr)
+            cout << qr->getMessage() << endl;
+          else
+            cout << " **** Oops, report " << *it << " does not exist" << endl;
+        }
 
       showBadChannels( (QReport *)h1->getQReport("my_yrange") );
       showBadChannels( (QReport *)h1->getQReport("deadChan") );
@@ -296,9 +296,9 @@ void DQMStandaloneExample::runTests()
 
       // this test is too verbose...
       //      showBadChannels( (QReport *)h1->getQReport("my_histo_equal") );
-      
+
     }
-  
+
 
 }
 
@@ -310,7 +310,7 @@ void DQMStandaloneExample::runTests()
 void DQMStandaloneExample::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
   // fill in test histogram with random data
-  h1->Fill(gRandom->Gaus(mean_, sigma_)); 
+  h1->Fill(gRandom->Gaus(mean_, sigma_));
   counter++;
 }
 
@@ -322,21 +322,20 @@ void DQMStandaloneExample::showBadChannels(QReport *qr)
   vector<dqm::me_util::Channel> badChannels = qr->getBadChannels();
   if(!badChannels.empty())
     cout << "\n Channels that failed test " << qr->getQRName() << ":\n";
-  
+
   auto it = badChannels.begin();
   while(it != badChannels.end())
     {
       // could use getBinX, getBinY, getBinZ for 2D, 3D histograms
-      cout << " Channel #: " << it->getBin() 
-	   << " Contents: " << it->getContents()
-	   << " +- " << it->getRMS() << endl;	
-      
+      cout << " Channel #: " << it->getBin()
+           << " Contents: " << it->getContents()
+           << " +- " << it->getRMS() << endl;
+
       ++it;
     }
-    
+
 }
 
 
 // define this as a plug-in
 DEFINE_FWK_MODULE(DQMStandaloneExample);
-

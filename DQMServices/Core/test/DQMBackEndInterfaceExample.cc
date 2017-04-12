@@ -2,7 +2,7 @@
 //
 // Package:    DQMServices/CoreROOT
 // Class:      DQMStoreExample
-// 
+//
 /**\class DQMStoreExample
 
 Description: Simple example showing how to book, fill and delete monitoring elements
@@ -42,14 +42,14 @@ class DQMStoreExample : public edm::EDAnalyzer {
 public:
   explicit DQMStoreExample( const edm::ParameterSet& );
   ~DQMStoreExample() override;
-  
+
   void analyze( const edm::Event&, const edm::EventSetup& ) override;
-  
+
   void endJob() override;
 
 private:
   // ----------member data ---------------------------
-  
+
   MonitorElement * h0;
   MonitorElement * h1;
   MonitorElement * h2;
@@ -85,7 +85,7 @@ private:
 // constructors and destructor
 //
 DQMStoreExample::DQMStoreExample(const edm::ParameterSet&
-						       iConfig ) 
+                                                       iConfig )
   : counter(0)
 {
   // get hold of back-end interface
@@ -93,31 +93,31 @@ DQMStoreExample::DQMStoreExample(const edm::ParameterSet&
 
   const float XMIN = 0; const float XMAX = 50;
   h0 = dbe->book1D("histo0", "Example 1D histogram.", NBINS, XMIN, XMAX );
-  
+
   // create and cd into new folder
   dbe->setCurrentFolder("C1/C2/C3");
   h1 = dbe->book1D("histo", "Example 1D histogram.", NBINS, XMIN, XMAX );
   h2 = dbe->book2D("histo2", "Example 2D histogram.", NBINS, XMIN, XMAX,
-		   NBINS, XMIN, XMAX);
+                   NBINS, XMIN, XMAX);
   assert(NBINS == h1->getNbinsX());
 
-  h7 = dbe->bookProfile("histo7", "Example Profile histogram.", 
-			NBINS, XMIN, XMAX, NBINS, XMIN, XMAX);
-  
+  h7 = dbe->bookProfile("histo7", "Example Profile histogram.",
+                        NBINS, XMIN, XMAX, NBINS, XMIN, XMAX);
+
   s1 = dbe->bookString("string1","This is a test string");
-  
+
   dbe->setCurrentFolder("B1/B2/");
   h3 = dbe->book1D("histo3", "Example 1D histogram.", NBINS, XMIN, XMAX );
-  h4 = dbe->book2D("histo4", "Example 2D histogram.", NBINS, XMIN, XMAX, 
-		   NBINS, XMIN, XMAX);
+  h4 = dbe->book2D("histo4", "Example 2D histogram.", NBINS, XMIN, XMAX,
+                   NBINS, XMIN, XMAX);
   assert(NBINS == h4->getNbinsX());
   assert(NBINS == h4->getNbinsY());
-  
+
   // cd into folder
   dbe->setCurrentFolder("C1/C2");
   h5 = dbe->book1D("histo5", "Example 1D histogram.", NBINS, XMIN, XMAX );
-  h6 = dbe->book2D("histo6", "Example 2D histogram.", NBINS, XMIN, XMAX, 
-		   NBINS, XMIN, XMAX);
+  h6 = dbe->book2D("histo6", "Example 2D histogram.", NBINS, XMIN, XMAX,
+                   NBINS, XMIN, XMAX);
   i1 = dbe->bookInt("integer1");
   f1 = dbe->bookFloat("float1");
   //   s1 = dbe->bookString("s1", "my string");
@@ -125,20 +125,20 @@ DQMStoreExample::DQMStoreExample(const edm::ParameterSet&
   // create and cd into new folder
   dbe->setCurrentFolder("C1/C2/C4");
   h54 = dbe->book1D("histo5", "Example 1D histogram.", NBINS, XMIN, XMAX );
-  h64 = dbe->book2D("histo6", "Example 2D histogram.", NBINS, XMIN, XMAX, 
-		    NBINS, XMIN, XMAX);
+  h64 = dbe->book2D("histo6", "Example 2D histogram.", NBINS, XMIN, XMAX,
+                    NBINS, XMIN, XMAX);
   i2 = dbe->bookInt("integer2");
   // remove directory (and contents)
   dbe->rmdir("C1/C2/C4");
-  
+
   // recreate and cd into directory
   dbe->setCurrentFolder("C1/C2/C4");
   h54 = dbe->book1D("histo5", "Example 1D histogram.", NBINS, XMIN, XMAX );
   dbe->rmdir("C1/C2/C4");
-  
+
   dbe->setCurrentFolder("C1/C2/C4");
-  h64 = dbe->book2D("histo6", "Example 2D histogram.", NBINS, XMIN, XMAX, 
-		    NBINS, XMIN, XMAX);
+  h64 = dbe->book2D("histo6", "Example 2D histogram.", NBINS, XMIN, XMAX,
+                    NBINS, XMIN, XMAX);
 
   h8 = dbe->book1D("histo8", "Example 1D histogram.", NBINS, XMIN, XMAX );
 
@@ -149,9 +149,9 @@ DQMStoreExample::DQMStoreExample(const edm::ParameterSet&
 // test back-end interface functionality
 void DQMStoreExample::integrityChecks()
 {
- 
+
   std::vector<MonitorElement * > contents, dbe_ret;
-  
+
   // First set of checks: make sure we can get MonitorElements in each folder:
 
   // contents of top (root) folder
@@ -168,18 +168,18 @@ void DQMStoreExample::integrityChecks()
   contents.push_back(f1); contents.push_back(h5);
   contents.push_back(h6); contents.push_back(i1);
   dbe_ret = dbe->getContents("C1/C2");
-  assert(dbe_ret == contents);  
+  assert(dbe_ret == contents);
   // contents of C1/C2/C3
   contents.clear();
   contents.push_back(h1); contents.push_back(h2);
   contents.push_back(h7); contents.push_back(s1);
   dbe_ret = dbe->getContents("C1/C2/C3");
-  assert(dbe_ret == contents);  
+  assert(dbe_ret == contents);
   // contents of C1/C2/C4
   contents.clear();
   contents.push_back(h64); contents.push_back(h8);
   dbe_ret = dbe->getContents("C1/C2/C4");
-  assert(dbe_ret == contents);  
+  assert(dbe_ret == contents);
 
   // Second set of checks: make sure we can use simple pathnames including subdirs
 
@@ -191,7 +191,7 @@ void DQMStoreExample::integrityChecks()
   contents.push_back(h7); contents.push_back(s1);
   contents.push_back(h64); contents.push_back(h8);
   dbe_ret = dbe->getAllContents("C1/C2");
-  assert(dbe_ret == contents); 
+  assert(dbe_ret == contents);
   dbe_ret = dbe->getAllContents("C1/C2/"); // w/ or w/o a "slash" at the end
   assert(dbe_ret == contents);
 
@@ -223,7 +223,7 @@ DQMStoreExample::~DQMStoreExample()
   // go to top directory
   dbe->cd();
   // remove MEs at top directory
-  dbe->removeContents(); 
+  dbe->removeContents();
   // remove directory (including subdirectories recursively)
   dbe->rmdir("C1");
   dbe->rmdir("B1");
@@ -252,7 +252,7 @@ void DQMStoreExample::endJob()
     }
 
   dbe->showDirStructure();
-  dbe->save("test.root");  
+  dbe->save("test.root");
 }
 
 
@@ -265,7 +265,7 @@ void DQMStoreExample::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 {
   for ( int i = 0; i < 10; ++i ) {
     float x = 50. * (float)std::rand()/ RAND_MAX;
-    
+
     h0->Fill(x/2);
     h1->Fill(x);
     h5->Fill(x-1.);
@@ -290,4 +290,3 @@ void DQMStoreExample::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
 // define this as a plug-in
 DEFINE_FWK_MODULE(DQMStoreExample);
-
