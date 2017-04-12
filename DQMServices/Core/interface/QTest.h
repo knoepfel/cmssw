@@ -89,11 +89,11 @@ protected:
       else status_ = dqm::qstatus::STATUS_OK;
 
       setMessage(); // this goes to SimpleTest derivates
-     
+
       if (verbose_==2) std::cout << " Message = " << message_ << std::endl;
-      if (verbose_==2) std::cout << " Name = " << qtname_ << 
-              " / Algorithm = " << algoName_ << 
-	      " / Status = " << status_ << 
+      if (verbose_==2) std::cout << " Name = " << qtname_ <<
+              " / Algorithm = " << algoName_ <<
+              " / Status = " << status_ <<
               " / Prob = " << prob_ << std::endl;
 
       qv.code = status_;
@@ -116,7 +116,7 @@ protected:
   std::string message_;  /// message attached to test
   float warningProb_, errorProb_;  /// probability limits for warnings, errors
   void setVerbose(int verbose)          { verbose_ = verbose; }
-  int verbose_;  
+  int verbose_;
 
 private:
   /// default "probability" values for setting warnings & errors when running tests
@@ -138,21 +138,21 @@ class SimpleTest : public QCriterion
 public:
   SimpleTest(const std::string &name, bool keepBadChannels = false) : QCriterion(name),
   minEntries_ (0),
-  keepBadChannels_ (keepBadChannels) 
+  keepBadChannels_ (keepBadChannels)
   {}
 
   /// set minimum # of entries needed
   void setMinimumEntries(unsigned n) { minEntries_ = n; }
   /// get vector of channels that failed test (not always relevant!)
   std::vector<DQMChannel> getBadChannels() const override
-  { 
-    return keepBadChannels_ ? badChannels_ : QCriterion::getBadChannels(); 
+  {
+    return keepBadChannels_ ? badChannels_ : QCriterion::getBadChannels();
   }
 
 protected:
 
   /// set status & message after test has run
-  void setMessage() override 
+  void setMessage() override
   {
     message_.clear();
   }
@@ -173,8 +173,8 @@ class Comp2RefEqualH : public SimpleTest
 {
 public:
   Comp2RefEqualH(const std::string &name) : SimpleTest(name,true)
-  { 
-    setAlgoName( getAlgoName() ); 
+  {
+    setAlgoName( getAlgoName() );
   }
   static std::string getAlgoName() { return "Comp2RefEqualH"; }
   float runTest(const MonitorElement*me) override;
@@ -186,21 +186,21 @@ class Comp2RefChi2 : public SimpleTest
 {
 public:
   Comp2RefChi2(const std::string &name) :SimpleTest(name)
-  { 
-    setAlgoName(getAlgoName()); 
+  {
+    setAlgoName(getAlgoName());
   }
   static std::string getAlgoName() { return "Comp2RefChi2"; }
   float runTest(const MonitorElement*me) override;
-  
+
 protected:
 
-  void setMessage() override 
+  void setMessage() override
   {
     std::ostringstream message;
     message << "chi2/Ndof = " << chi2_ << "/" << Ndof_
-	    << ", minimum needed statistics = " << minEntries_
-	    << " warning threshold = " << this->warningProb_
-	    << " error threshold = " << this->errorProb_;
+            << ", minimum needed statistics = " << minEntries_
+            << " warning threshold = " << this->warningProb_
+            << " error threshold = " << this->errorProb_;
     message_ = message.str();
   }
 
@@ -214,21 +214,21 @@ class Comp2Ref2DChi2 : public SimpleTest
 {
 public:
   Comp2Ref2DChi2(const std::string &name) :SimpleTest(name)
-  { 
-    setAlgoName(getAlgoName()); 
+  {
+    setAlgoName(getAlgoName());
   }
   static std::string getAlgoName() { return "Comp2Ref2DChi2"; }
   float runTest(const MonitorElement*me) override;
-  
+
 protected:
 
-  void setMessage() override 
+  void setMessage() override
   {
     std::ostringstream message;
     message << "chi2/Ndof = " << chi2_ << "/" << Ndof_
-	    << ", minimum needed statistics = " << minEntries_
-	    << " warning threshold = " << this->warningProb_
-	    << " error threshold = " << this->errorProb_;
+            << ", minimum needed statistics = " << minEntries_
+            << " warning threshold = " << this->warningProb_
+            << " error threshold = " << this->errorProb_;
     message_ = message.str();
   }
 
@@ -242,8 +242,8 @@ class Comp2RefKolmogorov : public SimpleTest
 {
 public:
   Comp2RefKolmogorov(const std::string &name) : SimpleTest(name)
-  { 
-    setAlgoName(getAlgoName()); 
+  {
+    setAlgoName(getAlgoName());
   }
   static std::string getAlgoName() { return "Comp2RefKolmogorov"; }
 
@@ -265,12 +265,12 @@ public:
 
   /// set allowed range in X-axis (default values: histogram's X-range)
   virtual void setAllowedXRange(double xmin, double xmax)
-  { 
-    xmin_ = xmin; xmax_ = xmax; 
-    rangeInitialized_ = true; 
+  {
+    xmin_ = xmin; xmax_ = xmax;
+    rangeInitialized_ = true;
   }
 
-protected: 
+protected:
   double xmin_;double xmax_;
   bool rangeInitialized_;
 };
@@ -290,9 +290,9 @@ public:
 
   void setUseEmptyBins(unsigned int useEmptyBins) { useEmptyBins_ = useEmptyBins; }
   virtual void setAllowedYRange(double ymin, double ymax)
-  { 
-    ymin_ = ymin; ymax_ = ymax; 
-    rangeInitialized_ = true; 
+  {
+    ymin_ = ymin; ymax_ = ymax;
+    rangeInitialized_ = true;
   }
 
 protected:
@@ -317,9 +317,9 @@ public:
 
   /// set Ymin (inclusive) threshold for "dead" channel (default: 0)
   void setThreshold(double ymin)
-  { 
-    ymin_ = ymin;  
-    rangeInitialized_ = true; 
+  {
+    ymin_ = ymin;
+    rangeInitialized_ = true;
   } /// ymin - threshold
 
 protected:
@@ -371,7 +371,7 @@ protected:
 
   float tolerance_;        /*< tolerance for considering a channel noisy */
   unsigned numNeighbors_;  /*< # of neighboring channels for calculating average to be used
-			     for comparison with channel under consideration */
+                             for comparison with channel under consideration */
   bool rangeInitialized_;  /*< init-flag for tolerance */
 };
 
@@ -391,8 +391,8 @@ public:
   static std::string getAlgoName() { return "ContentsWithinExpected"; }
   float runTest(const MonitorElement *me) override;
 
-  void setUseEmptyBins(unsigned int useEmptyBins) { 
-    useEmptyBins_ = useEmptyBins; 
+  void setUseEmptyBins(unsigned int useEmptyBins) {
+    useEmptyBins_ = useEmptyBins;
   }
   void setMeanRange(double xmin, double xmax);
   void setRMSRange(double xmin, double xmax);
@@ -408,7 +408,7 @@ public:
   }
 
 protected:
-  bool checkMean_;	    //< if true, check the mean value
+  bool checkMean_;          //< if true, check the mean value
   bool checkRMS_;           //< if true, check the RMS value
   bool checkMeanTolerance_; //< if true, check mean tolerance
   float toleranceMean_;     //< fractional tolerance on mean (use only if checkMeanTolerance_ = true)
@@ -450,8 +450,8 @@ protected:
 {
 public:
   AllContentWithinFixedRange(const std::string &name) : SimpleTest(name)
-  { 
-    setAlgoName(getAlgoName()); 
+  {
+    setAlgoName(getAlgoName());
   }
   static std::string getAlgoName(void) { return "RuleAllContentWithinFixedRange"; }
   float runTest(const MonitorElement *me);
@@ -459,12 +459,12 @@ public:
   void set_x_min(double x)             { x_min  = x; }
   void set_x_max(double x)             { x_max  = x; }
   void set_epsilon_max(double epsilon) { epsilon_max = epsilon; }
-  void set_S_fail(double S)	       { S_fail = S; }
-  void set_S_pass(double S)	       { S_pass = S; }
-  double get_epsilon_obs(void) 	       { return epsilon_obs; }
-  double get_S_fail_obs(void)  	       { return S_fail_obs;  }
-  double get_S_pass_obs(void)  	       { return S_pass_obs;  }
-  int get_result(void)		       { return result; }
+  void set_S_fail(double S)            { S_fail = S; }
+  void set_S_pass(double S)            { S_pass = S; }
+  double get_epsilon_obs(void)         { return epsilon_obs; }
+  double get_S_fail_obs(void)          { return S_fail_obs;  }
+  double get_S_pass_obs(void)          { return S_pass_obs;  }
+  int get_result(void)                 { return result; }
 
 protected:
   TH1F *histogram ; //define Test histo
@@ -481,19 +481,19 @@ protected:
 {
 public:
   AllContentWithinFloatingRange(const std::string &name) : SimpleTest(name)
-  { 
-    setAlgoName(getAlgoName()); 
+  {
+    setAlgoName(getAlgoName());
   }
   static std::string getAlgoName(void) { return "RuleAllContentWithinFloatingRange"; }
 
   void set_Nrange(int N)               { Nrange = N; }
   void set_epsilon_max(double epsilon) { epsilon_max = epsilon; }
-  void set_S_fail(double S)	       { S_fail = S; }
-  void set_S_pass(double S)	       { S_pass = S; }
-  double get_epsilon_obs(void) 	       { return epsilon_obs; }
-  double get_S_fail_obs(void)  	       { return S_fail_obs;  }
-  double get_S_pass_obs(void)	       { return S_pass_obs;  }
-  int get_result(void)		       { return result; }
+  void set_S_fail(double S)            { S_fail = S; }
+  void set_S_pass(double S)            { S_pass = S; }
+  double get_epsilon_obs(void)         { return epsilon_obs; }
+  double get_S_fail_obs(void)          { return S_fail_obs;  }
+  double get_S_pass_obs(void)          { return S_pass_obs;  }
+  int get_result(void)                 { return result; }
 
   float runTest(const MonitorElement *me );
 
@@ -597,18 +597,18 @@ class CSC01 : public SimpleTest
 {
 public:
   CSC01(const std::string &name) : SimpleTest(name)
-  { 
-    setAlgoName(getAlgoName()); 
+  {
+    setAlgoName(getAlgoName());
   }
   static std::string getAlgoName() { return "RuleCSC01"; }
 
   void set_epsilon_max(double epsilon) { epsilon_max = epsilon; }
-  void set_S_fail(double S)	       { S_fail = S; }
-  void set_S_pass(double S)	       { S_pass = S; }
-  double get_epsilon_obs() 	       { return epsilon_obs; }
-  double get_S_fail_obs()  	       { return S_fail_obs;  }
-  double get_S_pass_obs()  	       { return S_pass_obs;  }
-  int get_result()		       { return result; }
+  void set_S_fail(double S)            { S_fail = S; }
+  void set_S_pass(double S)            { S_pass = S; }
+  double get_epsilon_obs()             { return epsilon_obs; }
+  double get_S_fail_obs()              { return S_fail_obs;  }
+  double get_S_pass_obs()              { return S_pass_obs;  }
+  int get_result()                     { return result; }
 
   float runTest(const MonitorElement*me) override;
 
@@ -661,7 +661,7 @@ private :
   float _min, _max;      //Test values
   int _emptyBins;        //use empty bins
   float _maxMed,_minMed; //Global max for median&mean
-  float _statCut;        //Minimal number of non zero entries needed for the quality test 
+  float _statCut;        //Minimal number of non zero entries needed for the quality test
 
   int nBinsX, nBinsY; //Dimensions of hystogram
 
@@ -714,22 +714,22 @@ class AllContentAlongDiagonal : public SimpleTest
 
 public:
   AllContentAlongDiagonal(const std::string &name) : SimpleTest(name)
-  { 
-    setAlgoName(getAlgoName()); 
+  {
+    setAlgoName(getAlgoName());
   }
   static std::string getAlgoName(void) { return "RuleAllContentAlongDiagonal"; }
 
   void set_epsilon_max(double epsilon) { epsilon_max = epsilon; }
-  void set_S_fail(double S)	       { S_fail = S; }
-  void set_S_pass(double S)	       { S_pass = S; } 
-  double get_epsilon_obs() 	       { return epsilon_obs; }
-  double get_S_fail_obs()  	       { return S_fail_obs;  }
-  double get_S_pass_obs()  	       { return S_pass_obs;  }
-  int get_result()		       { return result; }
+  void set_S_fail(double S)            { S_fail = S; }
+  void set_S_pass(double S)            { S_pass = S; }
+  double get_epsilon_obs()             { return epsilon_obs; }
+  double get_S_fail_obs()              { return S_fail_obs;  }
+  double get_S_pass_obs()              { return S_pass_obs;  }
+  int get_result()                     { return result; }
 
   //public:
   //using SimpleTest::runTest;
-  float runTest(const MonitorElement*me); 
+  float runTest(const MonitorElement*me);
 
 protected:
   double epsilon_max;

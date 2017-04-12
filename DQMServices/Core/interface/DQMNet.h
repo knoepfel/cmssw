@@ -20,61 +20,60 @@
 
 //class DQMStore;
 
-class DQMNet
-{
+class DQMNet {
 public:
-  static const uint32_t DQM_PROP_TYPE_MASK	 = 0x000000ff;
-  static const uint32_t DQM_PROP_TYPE_SCALAR	 = 0x0000000f;
-  static const uint32_t DQM_PROP_TYPE_INVALID	 = 0x00000000;
-  static const uint32_t DQM_PROP_TYPE_INT	 = 0x00000001;
-  static const uint32_t DQM_PROP_TYPE_REAL	 = 0x00000002;
-  static const uint32_t DQM_PROP_TYPE_STRING	 = 0x00000003;
-  static const uint32_t DQM_PROP_TYPE_TH1F	 = 0x00000010;
-  static const uint32_t DQM_PROP_TYPE_TH1S	 = 0x00000011;
-  static const uint32_t DQM_PROP_TYPE_TH1D	 = 0x00000012;
-  static const uint32_t DQM_PROP_TYPE_TH2F	 = 0x00000020;
-  static const uint32_t DQM_PROP_TYPE_TH2S	 = 0x00000021;
-  static const uint32_t DQM_PROP_TYPE_TH2D	 = 0x00000022;
-  static const uint32_t DQM_PROP_TYPE_TH3F	 = 0x00000030;
-  static const uint32_t DQM_PROP_TYPE_TH3S	 = 0x00000031;
-  static const uint32_t DQM_PROP_TYPE_TH3D	 = 0x00000032;
-  static const uint32_t DQM_PROP_TYPE_TPROF	 = 0x00000040;
-  static const uint32_t DQM_PROP_TYPE_TPROF2D	 = 0x00000041;
-  static const uint32_t DQM_PROP_TYPE_DATABLOB	 = 0x00000050;
-  
-  static const uint32_t DQM_PROP_REPORT_MASK	 = 0x00000f00;
-  static const uint32_t DQM_PROP_REPORT_CLEAR	 = 0x00000000;
-  static const uint32_t DQM_PROP_REPORT_ERROR	 = 0x00000100;
-  static const uint32_t DQM_PROP_REPORT_WARN	 = 0x00000200;
-  static const uint32_t DQM_PROP_REPORT_OTHER	 = 0x00000400;
-  static const uint32_t DQM_PROP_REPORT_ALARM	 = (DQM_PROP_REPORT_ERROR
-						    | DQM_PROP_REPORT_WARN
-						    | DQM_PROP_REPORT_OTHER);
+  static constexpr uint32_t DQM_PROP_TYPE_MASK       = 0x000000ff;
+  static constexpr uint32_t DQM_PROP_TYPE_SCALAR     = 0x0000000f;
+  static constexpr uint32_t DQM_PROP_TYPE_INVALID    = 0x00000000;
+  static constexpr uint32_t DQM_PROP_TYPE_INT        = 0x00000001;
+  static constexpr uint32_t DQM_PROP_TYPE_REAL       = 0x00000002;
+  static constexpr uint32_t DQM_PROP_TYPE_STRING     = 0x00000003;
+  static constexpr uint32_t DQM_PROP_TYPE_TH1F       = 0x00000010;
+  static constexpr uint32_t DQM_PROP_TYPE_TH1S       = 0x00000011;
+  static constexpr uint32_t DQM_PROP_TYPE_TH1D       = 0x00000012;
+  static constexpr uint32_t DQM_PROP_TYPE_TH2F       = 0x00000020;
+  static constexpr uint32_t DQM_PROP_TYPE_TH2S       = 0x00000021;
+  static constexpr uint32_t DQM_PROP_TYPE_TH2D       = 0x00000022;
+  static constexpr uint32_t DQM_PROP_TYPE_TH3F       = 0x00000030;
+  static constexpr uint32_t DQM_PROP_TYPE_TH3S       = 0x00000031;
+  static constexpr uint32_t DQM_PROP_TYPE_TH3D       = 0x00000032;
+  static constexpr uint32_t DQM_PROP_TYPE_TPROF      = 0x00000040;
+  static constexpr uint32_t DQM_PROP_TYPE_TPROF2D    = 0x00000041;
+  static constexpr uint32_t DQM_PROP_TYPE_DATABLOB   = 0x00000050;
 
-  static const uint32_t DQM_PROP_HAS_REFERENCE	 = 0x00001000;
-  static const uint32_t DQM_PROP_TAGGED		 = 0x00002000;
-  static const uint32_t DQM_PROP_ACCUMULATE	 = 0x00004000;
-  static const uint32_t DQM_PROP_RESET		 = 0x00008000;
+  static constexpr uint32_t DQM_PROP_REPORT_MASK     = 0x00000f00;
+  static constexpr uint32_t DQM_PROP_REPORT_CLEAR    = 0x00000000;
+  static constexpr uint32_t DQM_PROP_REPORT_ERROR    = 0x00000100;
+  static constexpr uint32_t DQM_PROP_REPORT_WARN     = 0x00000200;
+  static constexpr uint32_t DQM_PROP_REPORT_OTHER    = 0x00000400;
+  static constexpr uint32_t DQM_PROP_REPORT_ALARM    = (DQM_PROP_REPORT_ERROR
+                                                        | DQM_PROP_REPORT_WARN
+                                                        | DQM_PROP_REPORT_OTHER);
 
-  static const uint32_t DQM_PROP_NEW		 = 0x00010000;
-  static const uint32_t DQM_PROP_RECEIVED	 = 0x00020000;
-  static const uint32_t DQM_PROP_LUMI		 = 0x00040000;
-  static const uint32_t DQM_PROP_DEAD		 = 0x00080000;
-  static const uint32_t DQM_PROP_STALE		 = 0x00100000;
-  static const uint32_t DQM_PROP_EFFICIENCY_PLOT = 0x00200000;
-  static const uint32_t DQM_PROP_MARKTODELETE    = 0x01000000;
+  static constexpr uint32_t DQM_PROP_HAS_REFERENCE   = 0x00001000;
+  static constexpr uint32_t DQM_PROP_TAGGED          = 0x00002000;
+  static constexpr uint32_t DQM_PROP_ACCUMULATE      = 0x00004000;
+  static constexpr uint32_t DQM_PROP_RESET           = 0x00008000;
 
-  static const uint32_t DQM_MSG_HELLO		 = 0;
-  static const uint32_t DQM_MSG_UPDATE_ME	 = 1;
-  static const uint32_t DQM_MSG_LIST_OBJECTS	 = 2;
-  static const uint32_t DQM_MSG_GET_OBJECT	 = 3;
+  static constexpr uint32_t DQM_PROP_NEW             = 0x00010000;
+  static constexpr uint32_t DQM_PROP_RECEIVED        = 0x00020000;
+  static constexpr uint32_t DQM_PROP_LUMI            = 0x00040000;
+  static constexpr uint32_t DQM_PROP_DEAD            = 0x00080000;
+  static constexpr uint32_t DQM_PROP_STALE           = 0x00100000;
+  static constexpr uint32_t DQM_PROP_EFFICIENCY_PLOT = 0x00200000;
+  static constexpr uint32_t DQM_PROP_MARKTODELETE    = 0x01000000;
 
-  static const uint32_t DQM_REPLY_LIST_BEGIN	 = 101;
-  static const uint32_t DQM_REPLY_LIST_END	 = 102;
-  static const uint32_t DQM_REPLY_NONE		 = 103;
-  static const uint32_t DQM_REPLY_OBJECT	 = 104;
+  static constexpr uint32_t DQM_MSG_HELLO            = 0;
+  static constexpr uint32_t DQM_MSG_UPDATE_ME        = 1;
+  static constexpr uint32_t DQM_MSG_LIST_OBJECTS     = 2;
+  static constexpr uint32_t DQM_MSG_GET_OBJECT       = 3;
 
-  static const uint32_t MAX_PEER_WAITREQS	 = 128;
+  static constexpr uint32_t DQM_REPLY_LIST_BEGIN     = 101;
+  static constexpr uint32_t DQM_REPLY_LIST_END       = 102;
+  static constexpr uint32_t DQM_REPLY_NONE           = 103;
+  static constexpr uint32_t DQM_REPLY_OBJECT         = 104;
+
+  static constexpr uint32_t MAX_PEER_WAITREQS        = 128;
 
   struct Peer;
   struct QValue;
@@ -97,7 +96,7 @@ public:
   struct CoreObject
   {
     uint32_t		flags;
-    uint32_t 		tag;
+    uint32_t            tag;
     uint64_t		version;
     uint32_t            run;
     uint32_t            lumi;
@@ -107,7 +106,7 @@ public:
     std::string		objname;
     QReports		qreports;
   };
-  
+
   struct Object : CoreObject
   {
     uint64_t		hash;
@@ -158,89 +157,89 @@ public:
     bool		update;
   };
 
-  DQMNet(const std::string &appname = "");
+  DQMNet(std::string const& appname = "");
   virtual ~DQMNet();
 
-  void			debug(bool doit);
-  void			delay(int delay);
-  void			startLocalServer(int port);
-  void			startLocalServer(const char *path);
-  void			staleObjectWaitLimit(lat::TimeSpan time);
-  void			updateToCollector(const std::string &host, int port);
-  void			listenToCollector(const std::string &host, int port);
-  void			shutdown();
-  void			lock();
-  void			unlock();
+  void debug(bool doit);
+  void delay(int delay);
+  void startLocalServer(int port);
+  void startLocalServer(char const* path);
+  void staleObjectWaitLimit(lat::TimeSpan time);
+  void updateToCollector(std::string const& host, int port);
+  void listenToCollector(std::string const& host, int port);
+  void shutdown();
+  void lock();
+  void unlock();
 
-  void			start();
-  void			run();
+  void start();
+  void run();
 
-  void			sendLocalChanges();
+  void sendLocalChanges();
 
-  static bool setOrder(const CoreObject &a, const CoreObject &b)
-    {
-      if (a.run == b.run) {
-        if (a.lumi == b.lumi) {
-          if (a.streamId == b.streamId) {
-            if (a.moduleId == b.moduleId) {
-              if (*a.dirname == *b.dirname) {
-                return a.objname < b.objname;
-              }
-              return *a.dirname < *b.dirname;
+  static bool setOrder(CoreObject const& a, CoreObject const& b)
+  {
+    if (a.run == b.run) {
+      if (a.lumi == b.lumi) {
+        if (a.streamId == b.streamId) {
+          if (a.moduleId == b.moduleId) {
+            if (*a.dirname == *b.dirname) {
+              return a.objname < b.objname;
             }
-            return a.moduleId < b.moduleId;
+            return *a.dirname < *b.dirname;
           }
-          return a.streamId < b.streamId;
+          return a.moduleId < b.moduleId;
         }
-        return a.lumi < b.lumi;
+        return a.streamId < b.streamId;
       }
-      return a.run < b.run;
+      return a.lumi < b.lumi;
     }
+    return a.run < b.run;
+  }
 
   struct HashOp
   {
-    uint32_t operator()(const Object &a) const
-      {
-        return a.hash;
-      }
+    uint32_t operator()(Object const& a) const
+    {
+      return a.hash;
+    }
   };
 
   struct HashEqual
   {
-    bool operator()(const Object &a, const Object &b) const
-      {
-        return a.hash == b.hash && *a.dirname == *b.dirname && a.objname == b.objname;
-      }
+    bool operator()(Object const& a, Object const& b) const
+    {
+      return a.hash == b.hash && *a.dirname == *b.dirname && a.objname == b.objname;
+    }
   };
 
   static size_t
-  dqmhash(const void *key, size_t keylen)
-    {
-      // Reduced version of Bob Jenkins' hash function at:
-      //   http://www.burtleburtle.net/bob/c/lookup3.c
+  dqmhash(const void* key, size_t keylen)
+  {
+    // Reduced version of Bob Jenkins' hash function at:
+    //   http://www.burtleburtle.net/bob/c/lookup3.c
 #     define dqmhashrot(x,k) (((x)<<(k)) | ((x)>>(32-(k))))
-#     define dqmhashmix(a,b,c) { \
-        a -= c; a ^= dqmhashrot(c, 4); c += b; \
-        b -= a; b ^= dqmhashrot(a, 6); a += c; \
-        c -= b; c ^= dqmhashrot(b, 8); b += a; \
-        a -= c; a ^= dqmhashrot(c,16); c += b; \
-        b -= a; b ^= dqmhashrot(a,19); a += c; \
-        c -= b; c ^= dqmhashrot(b, 4); b += a; }
-#     define dqmhashfinal(a,b,c) { \
-        c ^= b; c -= dqmhashrot(b,14); \
-        a ^= c; a -= dqmhashrot(c,11); \
-        b ^= a; b -= dqmhashrot(a,25); \
-        c ^= b; c -= dqmhashrot(b,16); \
-        a ^= c; a -= dqmhashrot(c,4);  \
-        b ^= a; b -= dqmhashrot(a,14); \
-        c ^= b; c -= dqmhashrot(b,24); }
- 
-      uint32_t a, b, c;
-      a = b = c = 0xdeadbeef + (uint32_t) keylen;
-      const auto *k = (const unsigned char *) key;
+#     define dqmhashmix(a,b,c) {                \
+      a -= c; a ^= dqmhashrot(c, 4); c += b;    \
+      b -= a; b ^= dqmhashrot(a, 6); a += c;    \
+      c -= b; c ^= dqmhashrot(b, 8); b += a;    \
+      a -= c; a ^= dqmhashrot(c,16); c += b;    \
+      b -= a; b ^= dqmhashrot(a,19); a += c;    \
+      c -= b; c ^= dqmhashrot(b, 4); b += a; }
+#     define dqmhashfinal(a,b,c) {              \
+      c ^= b; c -= dqmhashrot(b,14);            \
+      a ^= c; a -= dqmhashrot(c,11);            \
+      b ^= a; b -= dqmhashrot(a,25);            \
+      c ^= b; c -= dqmhashrot(b,16);            \
+      a ^= c; a -= dqmhashrot(c,4);             \
+      b ^= a; b -= dqmhashrot(a,14);            \
+      c ^= b; c -= dqmhashrot(b,24); }
 
-      // all but the last block: affect some bits of (a, b, c)
-      while (keylen > 12)
+    uint32_t a, b, c;
+    a = b = c = 0xdeadbeef + (uint32_t) keylen;
+    const auto *k = (const unsigned char *) key;
+
+    // all but the last block: affect some bits of (a, b, c)
+    while (keylen > 12)
       {
         a += k[0];
         a += ((uint32_t)k[1]) << 8;
@@ -259,8 +258,8 @@ public:
         k += 12;
       }
 
-      // last block: affect all 32 bits of (c); all case statements fall through
-      switch (keylen)
+    // last block: affect all 32 bits of (c); all case statements fall through
+    switch (keylen)
       {
       case 12: c += ((uint32_t)k[11]) << 24;
       case 11: c += ((uint32_t)k[10]) << 16;
@@ -274,19 +273,19 @@ public:
       case 3 : a += ((uint32_t)k[2]) << 16;
       case 2 : a += ((uint32_t)k[1]) << 8;
       case 1 : a += k[0];
-               break;
+        break;
       case 0 : return c;
       }
 
-      dqmhashfinal(a, b, c);
-      return c;
+    dqmhashfinal(a, b, c);
+    return c;
 #     undef dqmhashrot
 #     undef dqmhashmix
 #     undef dqmhashfinal
-    }
+  }
 
-  static void		packQualityData(std::string &into, const QReports &qr);
-  static void		unpackQualityData(QReports &qr, uint32_t &flags, const char *from);
+  static void packQualityData(std::string& into, QReports const& qr);
+  static void unpackQualityData(QReports& qr, uint32_t& flags, char const* from);
 
 protected:
   std::ostream &	logme();
@@ -320,9 +319,9 @@ protected:
 
 private:
   void			losePeer(const char *reason,
-				 Peer *peer,
-				 lat::IOSelectEvent *event,
-				 lat::Error *err = nullptr);
+                                 Peer *peer,
+                                 lat::IOSelectEvent *event,
+                                 lat::Error *err = nullptr);
   void			requestObjectData(Peer *p, const char *name, size_t len);
   void			releaseFromWait(WaitList::iterator i, Object *o);
   void			releaseWaiters(const std::string &name, Object *o);
@@ -358,14 +357,13 @@ public:
 };
 
 template <class ObjType>
-class DQMImplNet : public DQMNet
-{
+class DQMImplNet : public DQMNet {
 public:
   struct ImplPeer;
 
   using DirMap = std::set<std::string>;
   typedef __gnu_cxx::hash_set<ObjType, HashOp, HashEqual> ObjectMap;
-  typedef std::map<lat::Socket *, ImplPeer> PeerMap;
+  typedef std::map<lat::Socket* , ImplPeer> PeerMap;
   struct ImplPeer : Peer
   {
     ImplPeer() = default;
@@ -373,74 +371,75 @@ public:
     DirMap dirs;
   };
 
-  DQMImplNet(const std::string &appname = "")
+  DQMImplNet(std::string const& appname = "")
     : DQMNet(appname)
-    {}
-  
+  {}
+
   ~DQMImplNet() override
-    = default;
+  = default;
 
 protected:
   Object *
   findObject(Peer *p, const std::string &name, Peer **owner = nullptr) override
-    {
-      size_t slash = name.rfind('/');
-      size_t dirpos = (slash == std::string::npos ? 0 : slash);
-      size_t namepos = (slash == std::string::npos ? 0 : slash+1);
-      std::string path(name, 0, dirpos);
-      ObjType proto;
-      proto.hash = dqmhash(name.c_str(), name.size());
-      proto.dirname = &path;
-      proto.objname.append(name, namepos, std::string::npos);
+  {
+    size_t slash = name.rfind('/');
+    size_t dirpos = (slash == std::string::npos ? 0 : slash);
+    size_t namepos = (slash == std::string::npos ? 0 : slash+1);
+    std::string path(name, 0, dirpos);
+    ObjType proto;
+    proto.hash = dqmhash(name.c_str(), name.size());
+    proto.dirname = &path;
+    proto.objname.append(name, namepos, std::string::npos);
 
-      typename ObjectMap::iterator pos;
-      typename PeerMap::iterator i, e;
-      if (owner)
-	*owner = nullptr;
-      if (p)
+    typename ObjectMap::iterator pos;
+    typename PeerMap::iterator i, e;
+    if (owner)
+      *owner = nullptr;
+    if (p)
       {
-	auto *ip = static_cast<ImplPeer *>(p);
-	pos = ip->objs.find(proto);
-	if (pos == ip->objs.end())
-	  return nullptr;
-	else
-	{
-	  if (owner) *owner = ip;
-	  return const_cast<ObjType *>(&*pos);
-	}
+        auto *ip = static_cast<ImplPeer *>(p);
+        pos = ip->objs.find(proto);
+        if (pos == ip->objs.end())
+          return nullptr;
+        else
+          {
+            if (owner) *owner = ip;
+            return const_cast<ObjType *>(&*pos);
+          }
       }
-      else
+    else
       {
-	for (i = peers_.begin(), e = peers_.end(); i != e; ++i)
-	{
-	  pos = i->second.objs.find(proto);
-	  if (pos != i->second.objs.end())
-	  {
-	    if (owner) *owner = &i->second;
-	    return const_cast<ObjType *>(&*pos);
-	  }
-	}
-	return nullptr;
+        for (i = peers_.begin(), e = peers_.end(); i != e; ++i)
+          {
+            pos = i->second.objs.find(proto);
+            if (pos != i->second.objs.end())
+              {
+                if (owner) *owner = &i->second;
+                return const_cast<ObjType *>(&*pos);
+              }
+          }
+        return nullptr;
       }
-    }
+    return nullptr;
+  }
 
   Object *
   makeObject(Peer *p, const std::string &name) override
-    {
-      auto *ip = static_cast<ImplPeer *>(p);
-      size_t slash = name.rfind('/');
-      size_t dirpos = (slash == std::string::npos ? 0 : slash);
-      size_t namepos = (slash == std::string::npos ? 0 : slash+1);
-      ObjType o;
-      o.flags = 0;
-      o.tag = 0;
-      o.version = 0;
-      o.lastreq = 0;
-      o.dirname = &*ip->dirs.insert(name.substr(0, dirpos)).first;
-      o.objname.append(name, namepos, std::string::npos);
-      o.hash = dqmhash(name.c_str(), name.size());
-      return const_cast<ObjType *>(&*ip->objs.insert(o).first);
-    }
+  {
+    auto *ip = static_cast<ImplPeer *>(p);
+    size_t slash = name.rfind('/');
+    size_t dirpos = (slash == std::string::npos ? 0 : slash);
+    size_t namepos = (slash == std::string::npos ? 0 : slash+1);
+    ObjType o;
+    o.flags = 0;
+    o.tag = 0;
+    o.version = 0;
+    o.lastreq = 0;
+    o.dirname = &*ip->dirs.insert(name.substr(0, dirpos)).first;
+    o.objname.append(name, namepos, std::string::npos);
+    o.hash = dqmhash(name.c_str(), name.size());
+    return const_cast<ObjType *>(&*ip->objs.insert(o).first);
+  }
 
   // Mark all the objects dead.  This is intended to be used when
   // starting to process a complete list of objects, in order to
@@ -451,175 +450,175 @@ protected:
   // for objects we've lost interest in.
   void
   markObjectsDead(Peer *p) override
-    {
-      uint64_t minreq
-	= (lat::Time::current()
-	  - lat::TimeSpan(0, 0, 5 /* minutes */, 0, 0)).ns();
-      auto *ip = static_cast<ImplPeer *>(p);
-      typename ObjectMap::iterator i, e;
-      for (i = ip->objs.begin(), e = ip->objs.end(); i != e; ++i)
+  {
+    uint64_t minreq
+      = (lat::Time::current()
+         - lat::TimeSpan(0, 0, 5 /* minutes */, 0, 0)).ns();
+    auto *ip = static_cast<ImplPeer *>(p);
+    typename ObjectMap::iterator i, e;
+    for (i = ip->objs.begin(), e = ip->objs.end(); i != e; ++i)
       {
-	if (i->lastreq && i->lastreq < minreq)
-	  const_cast<ObjType &>(*i).lastreq = 0;
-	const_cast<ObjType &>(*i).flags |= DQM_PROP_DEAD;
+        if (i->lastreq && i->lastreq < minreq)
+          const_cast<ObjType&>(*i).lastreq = 0;
+        const_cast<ObjType&>(*i).flags |= DQM_PROP_DEAD;
       }
-    }
+  }
 
   // Mark remaining zombie objects as dead.  See markObjectsDead().
   void
   purgeDeadObjects(Peer *p) override
-    {
-      auto *ip = static_cast<ImplPeer *>(p);
-      typename ObjectMap::iterator i, e;
-      for (i = ip->objs.begin(), e = ip->objs.end(); i != e; )
+  {
+    auto *ip = static_cast<ImplPeer *>(p);
+    typename ObjectMap::iterator i, e;
+    for (i = ip->objs.begin(), e = ip->objs.end(); i != e; )
       {
-	if (i->flags & DQM_PROP_DEAD)
-	  ip->objs.erase(i++);
-	else
-	  ++i;
+        if (i->flags & DQM_PROP_DEAD)
+          ip->objs.erase(i++);
+        else
+          ++i;
       }
-    }
+  }
 
   Peer *
   getPeer(lat::Socket *s) override
-    {
-      auto pos = peers_.find(s);
-      auto end = peers_.end();
-      return pos == end ? nullptr : &pos->second;
-    }
+  {
+    auto pos = peers_.find(s);
+    auto end = peers_.end();
+    return pos == end ? nullptr : &pos->second;
+  }
 
   Peer *
   createPeer(lat::Socket *s) override
-    {
-      ImplPeer *ip = &peers_[s];
-      ip->socket = nullptr;
-      ip->sendq = nullptr;
-      ip->sendpos = 0;
-      ip->mask = 0;
-      ip->source = false;
-      ip->update = false;
-      ip->updated = false;
-      ip->updates = 0;
-      ip->waiting = 0;
-      ip->automatic = nullptr;
-      return ip;
-    }
+  {
+    ImplPeer *ip = &peers_[s];
+    ip->socket = nullptr;
+    ip->sendq = nullptr;
+    ip->sendpos = 0;
+    ip->mask = 0;
+    ip->source = false;
+    ip->update = false;
+    ip->updated = false;
+    ip->updates = 0;
+    ip->waiting = 0;
+    ip->automatic = nullptr;
+    return ip;
+  }
 
   void
   removePeer(Peer *p, lat::Socket *s) override
-    {
-      auto *ip = static_cast<ImplPeer *>(p);
-      bool needflush = ! ip->objs.empty();
+  {
+    auto *ip = static_cast<ImplPeer *>(p);
+    bool needflush = ! ip->objs.empty();
 
-      typename ObjectMap::iterator i, e;
-      for (i = ip->objs.begin(), e = ip->objs.end(); i != e; )
-	ip->objs.erase(i++);
-    
-      peers_.erase(s);
+    typename ObjectMap::iterator i, e;
+    for (i = ip->objs.begin(), e = ip->objs.end(); i != e; )
+      ip->objs.erase(i++);
 
-      // If we removed a peer with objects, our list of objects
-      // has changed and we need to update downstream peers.
-      if (needflush)
-	sendLocalChanges();
-    }
+    peers_.erase(s);
+
+    // If we removed a peer with objects, our list of objects
+    // has changed and we need to update downstream peers.
+    if (needflush)
+      sendLocalChanges();
+  }
 
   /// Send all objects to a peer and optionally mark sent objects old.
   void
   sendObjectListToPeer(Bucket *msg, bool all, bool clear) override
-    {
-      typename PeerMap::iterator pi, pe;
-      typename ObjectMap::iterator oi, oe;
-      size_t size = 0;
-      size_t numobjs = 0;
-      for (pi = peers_.begin(), pe = peers_.end(); pi != pe; ++pi)
-	for (oi = pi->second.objs.begin(), oe = pi->second.objs.end(); oi != oe; ++oi, ++numobjs)
-	  if (all || (oi->flags & DQM_PROP_NEW))
-	    size += 9*sizeof(uint32_t) + oi->dirname->size()
-		    + oi->objname.size() + 1 + oi->scalar.size() + oi->qdata.size()
-		    + (oi->lastreq > 0 ? oi->rawdata.size() : 0);
+  {
+    typename PeerMap::iterator pi, pe;
+    typename ObjectMap::iterator oi, oe;
+    size_t size = 0;
+    size_t numobjs = 0;
+    for (pi = peers_.begin(), pe = peers_.end(); pi != pe; ++pi)
+      for (oi = pi->second.objs.begin(), oe = pi->second.objs.end(); oi != oe; ++oi, ++numobjs)
+        if (all || (oi->flags & DQM_PROP_NEW))
+          size += 9*sizeof(uint32_t) + oi->dirname->size()
+            + oi->objname.size() + 1 + oi->scalar.size() + oi->qdata.size()
+            + (oi->lastreq > 0 ? oi->rawdata.size() : 0);
 
-      msg->data.reserve(msg->data.size() + size + 8 * sizeof(uint32_t));
+    msg->data.reserve(msg->data.size() + size + 8 * sizeof(uint32_t));
 
-      uint32_t nupdates = 0;
-      uint32_t words [4];
-      words[0] = sizeof(words);
-      words[1] = DQM_REPLY_LIST_BEGIN;
-      words[2] = numobjs;
-      words[3] = all;
-      copydata(msg, &words[0], sizeof(words));
+    uint32_t nupdates = 0;
+    uint32_t words [4];
+    words[0] = sizeof(words);
+    words[1] = DQM_REPLY_LIST_BEGIN;
+    words[2] = numobjs;
+    words[3] = all;
+    copydata(msg, &words[0], sizeof(words));
 
-      for (pi = peers_.begin(), pe = peers_.end(); pi != pe; ++pi)
-	for (oi = pi->second.objs.begin(), oe = pi->second.objs.end(); oi != oe; ++oi)
-	  if (all || (oi->flags & DQM_PROP_NEW))
-	  {
-	    sendObjectToPeer(msg, const_cast<ObjType &>(*oi), oi->lastreq > 0);
-	    if (clear)
-	      const_cast<ObjType &>(*oi).flags &= ~DQM_PROP_NEW;
-	    ++nupdates;
-	  }
+    for (pi = peers_.begin(), pe = peers_.end(); pi != pe; ++pi)
+      for (oi = pi->second.objs.begin(), oe = pi->second.objs.end(); oi != oe; ++oi)
+        if (all || (oi->flags & DQM_PROP_NEW))
+          {
+            sendObjectToPeer(msg, const_cast<ObjType &>(*oi), oi->lastreq > 0);
+            if (clear)
+              const_cast<ObjType &>(*oi).flags &= ~DQM_PROP_NEW;
+            ++nupdates;
+          }
 
-      words[1] = DQM_REPLY_LIST_END;
-      words[2] = nupdates;
-      copydata(msg, &words[0], sizeof(words));
-    }
+    words[1] = DQM_REPLY_LIST_END;
+    words[2] = nupdates;
+    copydata(msg, &words[0], sizeof(words));
+  }
 
   void
   sendObjectListToPeers(bool all) override
-    {
-      typename PeerMap::iterator i, e;
-      typename ObjectMap::iterator oi, oe;
-      for (i = peers_.begin(), e = peers_.end(); i != e; ++i)
+  {
+    typename PeerMap::iterator i, e;
+    typename ObjectMap::iterator oi, oe;
+    for (i = peers_.begin(), e = peers_.end(); i != e; ++i)
       {
-	ImplPeer &p = i->second;
-	if (! p.update)
-	  continue;
+        ImplPeer& p = i->second;
+        if (!p.update)
+          continue;
 
-	if (debug_)
-	  logme()
-	    << "DEBUG: notifying " << p.peeraddr << std::endl;
+        if (debug_)
+          logme()
+            << "DEBUG: notifying " << p.peeraddr << std::endl;
 
-	Bucket msg;
+        Bucket msg;
         msg.next = nullptr;
-	sendObjectListToPeer(&msg, !p.updated || all, true);
+        sendObjectListToPeer(&msg, !p.updated || all, true);
 
-	if (! msg.data.empty())
-	{
-	  Bucket **prev = &p.sendq;
-	  while (*prev)
-	    prev = &(*prev)->next;
+        if (! msg.data.empty())
+          {
+            Bucket **prev = &p.sendq;
+            while (*prev)
+              prev = &(*prev)->next;
 
-	  *prev = new Bucket;
-	  (*prev)->next = nullptr;
-	  (*prev)->data.swap(msg.data);
-	}
-	p.updated = true;
+            *prev = new Bucket;
+            (*prev)->next = nullptr;
+            (*prev)->data.swap(msg.data);
+          }
+        p.updated = true;
       }
-    }
+  }
 
   void
   updatePeerMasks() override
-    {
-      typename PeerMap::iterator i, e;
-      for (i = peers_.begin(), e = peers_.end(); i != e; )
-	updateMask(&(i++)->second);
-    }
+  {
+    typename PeerMap::iterator i, e;
+    for (i = peers_.begin(), e = peers_.end(); i != e; )
+      updateMask(&(i++)->second);
+  }
 
 protected:
-  PeerMap		peers_;
+  PeerMap peers_;
 };
-  
 
-class DQMBasicNet : public DQMImplNet<DQMNet::Object>
-{
+
+class DQMBasicNet : public DQMImplNet<DQMNet::Object> {
 public:
-  DQMBasicNet(const std::string &appname = "");
 
-  void			reserveLocalSpace(uint32_t size);
-  void			updateLocalObject(Object &o);
-  bool			removeLocalExcept(const std::set<std::string> &known);
+  DQMBasicNet(std::string const& appname = "");
+
+  void reserveLocalSpace(uint32_t size);
+  void updateLocalObject(Object& o);
+  bool removeLocalExcept(std::set<std::string> const& known);
 
 private:
-  ImplPeer		*local_;
+  ImplPeer* local_;
 };
 
 
