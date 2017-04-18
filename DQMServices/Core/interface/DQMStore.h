@@ -25,6 +25,8 @@
 
 #include "DQMServices/Core/interface/DQMDefinitions.h"
 #include "DQMServices/Core/interface/ConcurrentMonitorElement.h"
+#include "DQMServices/Core/interface/MonitorElement.h" // Rethink this?
+#include "tbb/concurrent_unordered_map.h"
 
 namespace edm {
   class DQMHttpSource;
@@ -90,6 +92,8 @@ public:
   };
   enum OpenRunDirs { KeepRunDirs, StripRunDirs };
 
+  using module_id_t = uint32_t;//decltype(std::declval<ModuleDescription>().id());
+
   class IBooker {
   public:
     friend class DQMStore;
@@ -97,7 +101,7 @@ public:
     // for the supported syntaxes, see the declarations of DQMStore::bookString
     template <typename... Args> MonitorElement* bookString(Args&&... args)
     {
-      return owner_->bookString(std::forward<Args>(args)...);
+      return owner_->bookString(std::forward<Args>(args)..., id_);
     }
 
     // for the supported syntaxes, see the declarations of DQMStore::bookInt
@@ -176,7 +180,15 @@ public:
     void tagContents(const std::string&, unsigned int);
 
   private:
-    explicit IBooker(DQMStore* store) : owner_{store} { assert(store); }
+    explicit IBooker(DQMStore* store,
+                     uint32_t const run = {},
+                     uint32_t const lumi = {},
+                     uint32_t const streamId = {},
+                     module_id_t const moduleId = {}) :
+      owner_{store}, id_{run, lumi, streamId, moduleId}
+    {
+      assert(store);
+    }
 
     IBooker(IBooker const&) = delete;
     IBooker& operator=(IBooker const&) = delete;
@@ -186,6 +198,7 @@ public:
     // class. We therefore need to store a pointer to the main
     // DQMStore instance (owner_).
     DQMStore* owner_;
+    MonitorElement::Identifier id_;
   }; // IBooker
 
   class ConcurrentBooker : public IBooker
@@ -348,27 +361,11 @@ public:
   // *before* invoking and automatically released upon returns.
   template <typename iFunc>
   void bookTransaction(iFunc f, uint32_t run, uint32_t streamId,
-                       uint32_t moduleId)
+                       module_id_t moduleId)
   {
     std::lock_guard<std::mutex> guard(book_mutex_);
-    /* If enableMultiThread is not enabled we do not set run_,
-       streamId_ and moduleId_ to 0, since we rely on their default
-       initialization in DQMStore constructor. */
-    if (enableMultiThread_) {
-      run_ = run;
-      streamId_ = streamId;
-      moduleId_ = moduleId;
-    }
-    f(*ibooker_);
-
-    /* Initialize to 0 the run_, streamId_ and moduleId_ variables
-       in case we run in mixed conditions with DQMEDAnalyzers and
-       legacy modules */
-    if (enableMultiThread_) {
-      run_ = 0;
-      streamId_ = 0;
-      moduleId_ = 0;
-    }
+    IBooker booker{this, run, streamId, moduleId};
+    f(booker);
   }
 
   // Similar function used to book "global" histograms via the
@@ -398,7 +395,9 @@ public:
   // is not needed.
   template <typename iFunc> void meBookerGetter(iFunc f)
   {
-    f(*ibooker_, *igetter_);
+    IBooker booker {this};
+    IGetter getter {this};
+    f(booker, getter);
   }
 
   // Signature needed in the harvesting where it might be needed to get
@@ -407,7 +406,11 @@ public:
   // No need to book anything there. The method relies on the
   // initialization of run, stream and module ID to 0. The mutex
   // is not needed.
-  template <typename iFunc> void meGetter(iFunc f) { f(*igetter_); }
+  template <typename iFunc> void meGetter(iFunc f)
+  {
+    IGetter getter {this};
+    f(getter);
+  }
 
   //-------------------------------------------------------------------------
   // ---------------------- Constructors ------------------------------------
@@ -432,7 +435,7 @@ public:
 
   MonitorElement* bookInt(std::string const& name);
   MonitorElement* bookFloat(std::string const& name);
-  MonitorElement* bookString(std::string const& name, std::string const& value);
+  MonitorElement* bookString(std::string const& name, std::string const& value, MonitorElement::Identifier const& identifier = {});
 
   // char_string is a type that enables implicit conversion from an
   // 'std::string' to a 'char const*' object.  It is a utility to
@@ -625,9 +628,10 @@ private:
                              std::string const& curdir, OpenRunDirs stripdirs);
 
   MonitorElement* findObject(std::string const& dir, std::string const& name,
-                             uint32_t const run = 0, uint32_t const lumi = 0,
+                             uint32_t const run = 0,
+                             uint32_t const lumi = 0,
                              uint32_t const streamId = 0,
-                             uint32_t const moduleId = 0) const;
+                             module_id_t const moduleId = 0) const;
 
   void get_info(dqmstorepb::ROOTFilePB_Histo const&, std::string& dirname,
                 std::string& objname, TObject** obj);
@@ -643,10 +647,10 @@ public:
 
   // Multithread SummaryCache manipulations
   void mergeAndResetMEsRunSummaryCache(uint32_t run, uint32_t streamId,
-                                       uint32_t moduleId);
+                                       module_id_t moduleId);
   void mergeAndResetMEsLuminositySummaryCache(uint32_t run, uint32_t lumi,
                                               uint32_t streamId,
-                                              uint32_t moduleId);
+                                              module_id_t moduleId);
 
   void deleteUnusedLumiHistograms(uint32_t run, uint32_t lumi);
 
@@ -673,7 +677,7 @@ private:
 
   MonitorElement* bookInt_(const std::string &dir, const std::string &name);
   MonitorElement* bookFloat_(const std::string &dir, const std::string &name);
-  MonitorElement* bookString_(const std::string &dir, const std::string &name, const std::string &value);
+  MonitorElement* bookString_(const std::string &dir, const std::string &name, const std::string &value, MonitorElement::Identifier const&);
   MonitorElement* book1D_(const std::string &dir, const std::string &name, TH1F *h);
   MonitorElement* book1S_(const std::string &dir, const std::string &name, TH1S *h);
   MonitorElement* book1DD_(const std::string &dir, const std::string &name, TH1D *h);
@@ -711,6 +715,7 @@ private:
   using QTestSpec  = std::pair<fastmatch *, QCriterion *>;
   using QTestSpecs = std::list<QTestSpec>;
   using MEMap      = std::set<MonitorElement>;
+  using SafeMEMap  = std::vector<tbb::concurrent_unordered_map<module_id_t, std::set<MonitorElement>>>;
   using QCMap      = std::map<std::string, QCriterion *>;
   using QAMap      = std::map<std::string, std::function<QCriterion*(std::string const&)>>;
 
@@ -746,20 +751,19 @@ private:
   std::string readSelectedDirectory_{};
   uint32_t run_{};
   uint32_t streamId_{};
-  uint32_t moduleId_{};
+  module_id_t moduleId_{};
   std::ofstream* stream_{nullptr};
 
   std::string pwd_{};
   MEMap data_;
+  SafeMEMap safe_data_;
   std::set<std::string> dirs_;
 
   QCMap qtests_;
   QAMap qalgos_;
   QTestSpecs qtestspecs_;
 
-  std::mutex book_mutex_{};
-  IBooker* ibooker_{nullptr};
-  IGetter* igetter_{nullptr};
+  std::mutex book_mutex_;
 
   friend class edm::DQMHttpSource;
   friend class DQMService;

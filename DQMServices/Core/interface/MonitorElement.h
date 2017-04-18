@@ -46,6 +46,13 @@ public:
     std::string str;
   };
 
+  struct Identifier {
+    std::uint32_t run;
+    std::uint32_t lumi;
+    std::uint32_t streamId;
+    std::uint32_t moduleId;
+  };
+
   enum Kind {
     DQM_KIND_INVALID = DQMNet::DQM_PROP_TYPE_INVALID,
     DQM_KIND_INT = DQMNet::DQM_PROP_TYPE_INT,
@@ -63,6 +70,7 @@ public:
   };
 
 private:
+  DQMNet::KeyObject key_;         //< Key object information
   DQMNet::CoreObject data_;       //< Core object information.
   Scalar scalar_;                 //< Current scalar value.
   TH1* object_{nullptr};          //< Current ROOT object value.

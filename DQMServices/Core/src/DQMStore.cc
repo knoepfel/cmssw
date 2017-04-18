@@ -516,8 +516,6 @@ DQMStore::DQMStore(edm::ParameterSet const& pset, edm::ActivityRegistry& ar)
 }
 
 DQMStore::DQMStore(edm::ParameterSet const& pset)
-    : ibooker_{new DQMStore::IBooker{this}},
-      igetter_{new DQMStore::IGetter{this}}
 {
   initializeFrom(pset);
 }
@@ -780,29 +778,28 @@ DQMStore::book_(std::string const& dir,
   h->SetDirectory(nullptr);
 
   // Check if the request monitor element already exists.
-  MonitorElement* me = findObject(dir, name, run_, 0, streamId_, moduleId_);
+  auto me = findObject(dir, name, run_, 0, streamId_, moduleId_);
   if (me) {
     if (collateHistograms_) {
       collate(me, h, verbose_);
-      delete h;
-      return me;
     }
     else {
-      if (verbose_ > 1)
+      if (verbose_ > 1) {
         std::cout << "DQMStore: " << context << ": monitor element '" << path
                   << "' already exists, collating" << std::endl;
+      }
       me->Reset();
       collate(me, h, verbose_);
-      delete h;
-      return me;
     }
+    delete h;
+    return me;
   }
   else {
     // Create and initialise core object.
     assert(dirs_.count(dir));
     MonitorElement proto{&*dirs_.find(dir), name, run_, streamId_, moduleId_};
     me = const_cast<MonitorElement&>(*data_.insert(std::move(proto)).first)
-             .initialise((MonitorElement::Kind)kind, h);
+      .initialise((MonitorElement::Kind)kind, h);
 
     // Initialise quality test information.
     for (auto const& q : qtestspecs_) {
@@ -843,8 +840,7 @@ DQMStore::book_(std::string const& dir,
     print_trace(dir, name);
 
   // Check if the request monitor element already exists.
-  if (MonitorElement* me =
-          findObject(dir, name, run_, 0, streamId_, moduleId_)) {
+  if (auto me = findObject(dir, name, run_, 0, streamId_, moduleId_)) {
     if (verbose_ > 1) {
       std::string path;
       mergePath(path, dir, name);
@@ -869,8 +865,7 @@ MonitorElement*
 DQMStore::bookInt_(std::string const& dir, std::string const& name)
 {
   if (collateHistograms_) {
-    if (MonitorElement* me =
-            findObject(dir, name, run_, 0, streamId_, moduleId_)) {
+    if (auto me = findObject(dir, name, run_, 0, streamId_, moduleId_)) {
       me->Fill(0);
       return me;
     }
@@ -893,8 +888,7 @@ DQMStore::bookFloat_(std::string const& dir,
                      std::string const& name)
 {
   if (collateHistograms_) {
-    if (MonitorElement* me =
-            findObject(dir, name, run_, 0, streamId_, moduleId_)) {
+    if (auto me = findObject(dir, name, run_, 0, streamId_, moduleId_)) {
       me->Fill(0.);
       return me;
     }
@@ -915,10 +909,11 @@ MonitorElement* DQMStore::bookFloat(std::string const& name)
 MonitorElement *
 DQMStore::bookString_(std::string const& dir,
                       std::string const& name,
-                      std::string const& value)
+                      std::string const& value,
+                      MonitorElement::Identifier const& id)
 {
   if (collateHistograms_) {
-    if (auto me = findObject(dir, name, run_, 0, streamId_, moduleId_))
+    if (auto me = findObject(dir, name, id.run, id.lumi, id.streamId, id.moduleId))
       return me;
   }
 
@@ -928,9 +923,10 @@ DQMStore::bookString_(std::string const& dir,
 
 /// Book string.
 MonitorElement* DQMStore::bookString(std::string const& name,
-                                     std::string const& value)
+                                     std::string const& value,
+                                     MonitorElement::Identifier const& id)
 {
-  return bookString_(pwd_, name, value);
+  return bookString_(pwd_, name, value, id);
 }
 
 // -------------------------------------------------------------------
@@ -1570,10 +1566,10 @@ void DQMStore::getContents(std::vector<std::string>& into,
 /// (null if MonitorElement does not exist)
 MonitorElement* DQMStore::findObject(std::string const& dir,
                                      std::string const& name,
-                                     const uint32_t run /* = 0 */,
-                                     const uint32_t lumi /* = 0 */,
-                                     const uint32_t streamId /* = 0 */,
-                                     const uint32_t moduleId /* = 0 */) const
+                                     uint32_t const run /* = 0 */,
+                                     uint32_t const lumi /* = 0 */,
+                                     uint32_t const streamId /* = 0 */,
+                                     uint32_t const moduleId /* = 0 */) const
 {
   if (dir.find_first_not_of(s_safe) != std::string::npos)
     raiseDQMError("DQMStore", "Monitor element path name '%s' uses"
@@ -2001,7 +1997,7 @@ bool DQMStore::extract(TObject* obj, std::string const& dir,
         {
           MonitorElement *me = findObject(dir, label);
           if (! me)
-            me = bookString_(dir, label, value);
+            me = bookString_(dir, label, value, MonitorElement::Identifier{});
           else if (overwrite)
             me->Fill(value);
         }

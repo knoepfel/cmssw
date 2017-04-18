@@ -92,14 +92,17 @@ public:
     std::string algorithm;
   };
 
-  struct CoreObject {
+  struct KeyObject {
+    uint32_t streamId;
+    uint32_t moduleId;
+  };
+
+  struct CoreObject : KeyObject {
     uint32_t flags;
     uint32_t tag;
     uint64_t version;
     uint32_t run;
     uint32_t lumi;
-    uint32_t streamId;
-    uint32_t moduleId;
     const std::string* dirname;
     std::string objname;
     QReports qreports;
