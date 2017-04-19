@@ -92,6 +92,7 @@ public:
   };
   enum OpenRunDirs { KeepRunDirs, StripRunDirs };
 
+  using stream_id_t = uint32_t;
   using module_id_t = uint32_t;//decltype(std::declval<ModuleDescription>().id());
 
   class IBooker {
@@ -107,68 +108,68 @@ public:
     // for the supported syntaxes, see the declarations of DQMStore::bookInt
     template <typename... Args> MonitorElement* bookInt(Args&&... args)
     {
-      return owner_->bookInt(std::forward<Args>(args)...);
+      return owner_->bookInt(std::forward<Args>(args)..., id_);
     }
 
     // for the supported syntaxes, see the declarations of DQMStore::bookFloat
     template <typename... Args> MonitorElement* bookFloat(Args&&... args)
     {
-      return owner_->bookFloat(std::forward<Args>(args)...);
+      return owner_->bookFloat(std::forward<Args>(args)..., id_);
     }
 
     // for the supported syntaxes, see the declarations of DQMStore::book1D
     template <typename... Args> MonitorElement* book1D(Args&&... args)
     {
-      return owner_->book1D(std::forward<Args>(args)...);
+      return owner_->book1D(std::forward<Args>(args)..., id_);
     }
 
     // for the supported syntaxes, see the declarations of DQMStore::book1S
     template <typename... Args> MonitorElement* book1S(Args&&... args)
     {
-      return owner_->book1S(std::forward<Args>(args)...);
+      return owner_->book1S(std::forward<Args>(args)..., id_);
     }
 
     // for the supported syntaxes, see the declarations of DQMStore::book1DD
     template <typename... Args> MonitorElement* book1DD(Args&&... args)
     {
-      return owner_->book1DD(std::forward<Args>(args)...);
+      return owner_->book1DD(std::forward<Args>(args)..., id_);
     }
 
     // for the supported syntaxes, see the declarations of DQMStore::book2D
     template <typename... Args> MonitorElement* book2D(Args&&... args)
     {
-      return owner_->book2D(std::forward<Args>(args)...);
+      return owner_->book2D(std::forward<Args>(args)..., id_);
     }
 
     // for the supported syntaxes, see the declarations of DQMStore::book2S
     template <typename... Args> MonitorElement* book2S(Args&&... args)
     {
-      return owner_->book2S(std::forward<Args>(args)...);
+      return owner_->book2S(std::forward<Args>(args)..., id_);
     }
 
     // for the supported syntaxes, see the declarations of DQMStore::book2DD
     template <typename... Args> MonitorElement* book2DD(Args&&... args)
     {
-      return owner_->book2DD(std::forward<Args>(args)...);
+      return owner_->book2DD(std::forward<Args>(args)..., id_);
     }
 
     // for the supported syntaxes, see the declarations of DQMStore::book3D
     template <typename... Args> MonitorElement* book3D(Args&&... args)
     {
-      return owner_->book3D(std::forward<Args>(args)...);
+      return owner_->book3D(std::forward<Args>(args)..., id_);
     }
 
     // for the supported syntaxes, see the declarations of DQMStore::bookProfile
     template <typename... Args> MonitorElement* bookProfile(Args&&... args)
     {
-      return owner_->bookProfile(std::forward<Args>(args)...);
+      return owner_->bookProfile(std::forward<Args>(args)..., id_);
     }
 
     // for the supported syntaxes, see the declarations of
     // DQMStore::bookProfile2D
     template <typename... Args> MonitorElement* bookProfile2D(Args&&... args)
     {
-      return owner_->bookProfile2D(std::forward<Args>(args)...);
+      return owner_->bookProfile2D(std::forward<Args>(args)..., id_);
     }
 
     void cd();
@@ -375,17 +376,8 @@ public:
     std::lock_guard<std::mutex> guard(book_mutex_);
     /* Even if enableMultiThread_ is enabled, keep the streamId_
        and moduleId_ to 0, since we want to book global histograms. */
-    if (enableMultiThread_) {
-      run_ = run;
-    }
-    ConcurrentBooker booker(this);
+    ConcurrentBooker booker{this, run};
     f(booker);
-
-    /* Set back to 0 the run_ in case we run in mixed conditions
-       with DQMEDAnalyzers and legacy modules */
-    if (enableMultiThread_) {
-      run_ = 0;
-    }
   }
 
   // Signature needed in the harvesting where the booking is done
@@ -395,8 +387,8 @@ public:
   // is not needed.
   template <typename iFunc> void meBookerGetter(iFunc f)
   {
-    IBooker booker {this};
-    IGetter getter {this};
+    IBooker booker{this};
+    IGetter getter{this};
     f(booker, getter);
   }
 
@@ -433,8 +425,8 @@ public:
   //-------------------------------------------------------------------------
   // ---------------------- public ME booking -------------------------------
 
-  MonitorElement* bookInt(std::string const& name);
-  MonitorElement* bookFloat(std::string const& name);
+  MonitorElement* bookInt(std::string const& name, MonitorElement::Identifier const& identifier = {});
+  MonitorElement* bookFloat(std::string const& name, MonitorElement::Identifier const& identifier = {});
   MonitorElement* bookString(std::string const& name, std::string const& value, MonitorElement::Identifier const& identifier = {});
 
   // char_string is a type that enables implicit conversion from an
@@ -451,80 +443,80 @@ public:
   };
 
   MonitorElement* book1D(char_string const& name, char_string const& title,
-                         int nchX, double lowX, double highX);
+                         int nchX, double lowX, double highX, MonitorElement::Identifier const& identifier = {});
   MonitorElement* book1D(char_string const& name, char_string const& title,
-                         int nchX, float const* xbinsize);
-  MonitorElement* book1D(char_string const& name, TH1F* h);
+                         int nchX, float const* xbinsize, MonitorElement::Identifier const& identifier = {});
+  MonitorElement* book1D(char_string const& name, TH1F* h, MonitorElement::Identifier const& identifier = {});
 
   MonitorElement* book1S(char_string const& name, char_string const& title,
-                         int nchX, double lowX, double highX);
+                         int nchX, double lowX, double highX, MonitorElement::Identifier const& identifier = {});
   MonitorElement* book1S(char_string const& name, char_string const& title,
-                         int nchX, float const* xbinsize);
-  MonitorElement* book1S(char_string const& name, TH1S* h);
+                         int nchX, float const* xbinsize, MonitorElement::Identifier const& identifier = {});
+  MonitorElement* book1S(char_string const& name, TH1S* h, MonitorElement::Identifier const& identifier = {});
 
   MonitorElement* book1DD(char_string const& name, char_string const& title,
-                          int nchX, double lowX, double highX);
+                          int nchX, double lowX, double highX, MonitorElement::Identifier const& identifier = {});
   MonitorElement* book1DD(char_string const& name, char_string const& title,
-                          int nchX, float const* xbinsize);
-  MonitorElement* book1DD(char_string const& name, TH1D* h);
+                          int nchX, float const* xbinsize, MonitorElement::Identifier const& identifier = {});
+  MonitorElement* book1DD(char_string const& name, TH1D* h, MonitorElement::Identifier const& identifier = {});
 
   MonitorElement* book2D(char_string const& name, char_string const& title,
                          int nchX, double lowX, double highX, int nchY,
-                         double lowY, double highY);
+                         double lowY, double highY, MonitorElement::Identifier const& identifier = {});
   MonitorElement* book2D(char_string const& name, char_string const& title,
                          int nchX, float const* xbinsize, int nchY,
-                         float const* ybinsize);
-  MonitorElement* book2D(char_string const& name, TH2F* h);
+                         float const* ybinsize, MonitorElement::Identifier const& identifier = {});
+  MonitorElement* book2D(char_string const& name, TH2F* h, MonitorElement::Identifier const& identifier = {});
 
   MonitorElement* book2S(char_string const& name, char_string const& title,
                          int nchX, double lowX, double highX, int nchY,
-                         double lowY, double highY);
+                         double lowY, double highY, MonitorElement::Identifier const& identifier = {});
   MonitorElement* book2S(char_string const& name, char_string const& title,
                          int nchX, float const* xbinsize, int nchY,
-                         float const* ybinsize);
-  MonitorElement* book2S(char_string const& name, TH2S* h);
+                         float const* ybinsize, MonitorElement::Identifier const& identifier = {});
+  MonitorElement* book2S(char_string const& name, TH2S* h, MonitorElement::Identifier const& identifier = {});
 
   MonitorElement* book2DD(char_string const& name, char_string const& title,
                           int nchX, double lowX, double highX, int nchY,
-                          double lowY, double highY);
+                          double lowY, double highY, MonitorElement::Identifier const& identifier = {});
   MonitorElement* book2DD(char_string const& name, char_string const& title,
                           int nchX, float const* xbinsize, int nchY,
-                          float const* ybinsize);
-  MonitorElement* book2DD(char_string const& name, TH2D* h);
+                          float const* ybinsize, MonitorElement::Identifier const& identifier = {});
+  MonitorElement* book2DD(char_string const& name, TH2D* h, MonitorElement::Identifier const& identifier = {});
 
   MonitorElement* book3D(char_string const& name, char_string const& title,
                          int nchX, double lowX, double highX, int nchY,
                          double lowY, double highY, int nchZ, double lowZ,
-                         double highZ);
-  MonitorElement* book3D(char_string const& name, TH3F* h);
+                         double highZ, MonitorElement::Identifier const& identifier = {});
+  MonitorElement* book3D(char_string const& name, TH3F* h, MonitorElement::Identifier const& identifier = {});
 
   MonitorElement* bookProfile(char_string const& name, char_string const& title,
                               int nchX, double lowX, double highX, int nchY,
                               double lowY, double highY,
-                              char const* option = "s");
+                              char const* option = "s", MonitorElement::Identifier const& identifier = {});
   MonitorElement* bookProfile(char_string const& name, char_string const& title,
                               int nchX, double lowX, double highX, double lowY,
-                              double highY, char const* option = "s");
+                              double highY, char const* option = "s", MonitorElement::Identifier const& identifier = {});
   MonitorElement* bookProfile(char_string const& name, char_string const& title,
                               int nchX, const double* xbinsize, int nchY,
                               double lowY, double highY,
-                              char const* option = "s");
+                              char const* option = "s", MonitorElement::Identifier const& identifier = {});
   MonitorElement* bookProfile(char_string const& name, char_string const& title,
                               int nchX, const double* xbinsize, double lowY,
-                              double highY, char const* option = "s");
-  MonitorElement* bookProfile(char_string const& name, TProfile* h);
+                              double highY, char const* option = "s", MonitorElement::Identifier const& identifier = {});
+  MonitorElement* bookProfile(char_string const& name, TProfile* h, MonitorElement::Identifier const& identifier = {});
 
   MonitorElement* bookProfile2D(char_string const& name,
                                 char_string const& title, int nchX, double lowX,
                                 double highX, int nchY, double lowY,
                                 double highY, int nchZ, double lowZ,
-                                double highZ, char const* option = "s");
+                                double highZ, char const* option = "s", MonitorElement::Identifier const& identifier = {});
   MonitorElement* bookProfile2D(char_string const& name,
                                 char_string const& title, int nchX, double lowX,
                                 double highX, int nchY, double lowY,
                                 double highY, double lowZ, double highZ,
-                                char const* option = "s");
-  MonitorElement* bookProfile2D(char_string const& name, TProfile2D* h);
+                                char const* option = "s", MonitorElement::Identifier const& identifier = {});
+  MonitorElement* bookProfile2D(char_string const& name, TProfile2D* h, MonitorElement::Identifier const& identifier = {});
 
   //-------------------------------------------------------------------------
   // ---------------------- public tagging ----------------------------------
@@ -605,6 +597,9 @@ public:
   void scaleElements();
 
 private:
+
+  using MEIdentifier = MonitorElement::Identifier;
+
   // ---------------- Navigation -----------------------
   bool cdInto(std::string const& path) const;
 
@@ -627,11 +622,7 @@ private:
                              std::string const& prepend,
                              std::string const& curdir, OpenRunDirs stripdirs);
 
-  MonitorElement* findObject(std::string const& dir, std::string const& name,
-                             uint32_t const run = 0,
-                             uint32_t const lumi = 0,
-                             uint32_t const streamId = 0,
-                             module_id_t const moduleId = 0) const;
+  MonitorElement* findObject(std::string const& dir, std::string const& name, MEIdentifier const& id = {}) const;
 
   void get_info(dqmstorepb::ROOTFilePB_Histo const&, std::string& dirname,
                 std::string& objname, TObject** obj);
@@ -668,25 +659,25 @@ private:
   MonitorElement* initialise(MonitorElement *me, const std::string &path);
   MonitorElement* book_(const std::string &dir,
                         const std::string &name,
-                        const char *context);
+                        const char *context, MEIdentifier const& identifier);
   template <class HISTO, class COLLATE>
   MonitorElement* book_(const std::string &dir,
                         const std::string &name,
                         const char *context,
-                        int kind, HISTO *h, COLLATE collate);
+                        int kind, HISTO *h, COLLATE collate, MEIdentifier const& identifier);
 
-  MonitorElement* bookInt_(const std::string &dir, const std::string &name);
-  MonitorElement* bookFloat_(const std::string &dir, const std::string &name);
-  MonitorElement* bookString_(const std::string &dir, const std::string &name, const std::string &value, MonitorElement::Identifier const&);
-  MonitorElement* book1D_(const std::string &dir, const std::string &name, TH1F *h);
-  MonitorElement* book1S_(const std::string &dir, const std::string &name, TH1S *h);
-  MonitorElement* book1DD_(const std::string &dir, const std::string &name, TH1D *h);
-  MonitorElement* book2D_(const std::string &dir, const std::string &name, TH2F *h);
-  MonitorElement* book2S_(const std::string &dir, const std::string &name, TH2S *h);
-  MonitorElement* book2DD_(const std::string &dir, const std::string &name, TH2D *h);
-  MonitorElement* book3D_(const std::string &dir, const std::string &name, TH3F *h);
-  MonitorElement* bookProfile_(const std::string &dir, const std::string &name, TProfile *h);
-  MonitorElement* bookProfile2D_(const std::string &dir, const std::string &name, TProfile2D *h);
+  MonitorElement* bookInt_(const std::string &dir, const std::string &name, MEIdentifier const& identifier);
+  MonitorElement* bookFloat_(const std::string &dir, const std::string &name, MEIdentifier const& identifier);
+  MonitorElement* bookString_(const std::string &dir, const std::string &name, const std::string &value, MEIdentifier const&);
+  MonitorElement* book1D_(const std::string &dir, const std::string &name, TH1F *h, MEIdentifier const& identifier);
+  MonitorElement* book1S_(const std::string &dir, const std::string &name, TH1S *h, MEIdentifier const& identifier);
+  MonitorElement* book1DD_(const std::string &dir, const std::string &name, TH1D *h, MEIdentifier const& identifier);
+  MonitorElement* book2D_(const std::string &dir, const std::string &name, TH2F *h, MEIdentifier const& identifier);
+  MonitorElement* book2S_(const std::string &dir, const std::string &name, TH2S *h, MEIdentifier const& identifier);
+  MonitorElement* book2DD_(const std::string &dir, const std::string &name, TH2D *h, MEIdentifier const& identifier);
+  MonitorElement* book3D_(const std::string &dir, const std::string &name, TH3F *h, MEIdentifier const& identifier);
+  MonitorElement* bookProfile_(const std::string &dir, const std::string &name, TProfile *h, MEIdentifier const& identifier);
+  MonitorElement* bookProfile2D_(const std::string &dir, const std::string &name, TProfile2D *h, MEIdentifier const& identifier);
 
   static bool checkBinningMatches(MonitorElement *me, TH1 *h, unsigned verbose);
 
@@ -715,7 +706,8 @@ private:
   using QTestSpec  = std::pair<fastmatch *, QCriterion *>;
   using QTestSpecs = std::list<QTestSpec>;
   using MEMap      = std::set<MonitorElement>;
-  using SafeMEMap  = std::vector<tbb::concurrent_unordered_map<module_id_t, std::set<MonitorElement>>>;
+  using KeyType    = std::pair<stream_id_t, module_id_t>;
+  using SafeMEMap  = tbb::concurrent_unordered_map<KeyType, std::set<MonitorElement>>;
   using QCMap      = std::map<std::string, QCriterion *>;
   using QAMap      = std::map<std::string, std::function<QCriterion*(std::string const&)>>;
 
@@ -749,9 +741,6 @@ private:
   bool LSbasedMode_;
   bool forceResetOnBeginLumi_{false};
   std::string readSelectedDirectory_{};
-  uint32_t run_{};
-  uint32_t streamId_{};
-  module_id_t moduleId_{};
   std::ofstream* stream_{nullptr};
 
   std::string pwd_{};
