@@ -70,7 +70,6 @@ public:
   };
 
 private:
-  DQMNet::KeyObject key_;         //< Key object information
   DQMNet::CoreObject data_;       //< Core object information.
   Scalar scalar_;                 //< Current scalar value.
   TH1* object_{nullptr};          //< Current ROOT object value.
@@ -81,6 +80,9 @@ private:
   MonitorElement* initialise(Kind kind);
   MonitorElement* initialise(Kind kind, TH1* rootobj);
   MonitorElement* initialise(Kind kind, const std::string& value);
+
+  //  static constexpr uint32_t globalStreamID {-1u};
+
   void globalize()
   {
     data_.streamId = 0;

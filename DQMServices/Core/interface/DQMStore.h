@@ -94,6 +94,7 @@ public:
 
   using stream_id_t = uint32_t;
   using module_id_t = uint32_t;//decltype(std::declval<ModuleDescription>().id());
+  using path_t = std::string;
 
   class IBooker {
   public:
@@ -744,8 +745,9 @@ private:
   std::ofstream* stream_{nullptr};
 
   std::string pwd_{};
+  //  std::map<std::string, std::set<module_id_t>>;
   MEMap data_;
-  SafeMEMap safe_data_;
+  //  SafeMEMap safe_data_;
   std::set<std::string> dirs_;
 
   QCMap qtests_;

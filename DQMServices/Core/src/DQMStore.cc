@@ -417,7 +417,6 @@ void DQMStore::mergeAndResetMEsRunSummaryCache(uint32_t const run,
       actual_global_me.markToDelete();
       //      safe_data_[KeyType{streamId, moduleId}].insert(actual_global_me);
       auto gme [[gnu::unused]] = data_.insert(std::move(actual_global_me));
-      assert(gme.second);
     }
     // TODO(rovere): eventually reset the local object and mark it as reusable??
     ++i;
@@ -717,7 +716,7 @@ void DQMStore::goUp()
 // -------------------------------------------------------------------
 /// get folder corresponding to inpath wrt to root (create subdirs if
 /// necessary)
-void DQMStore::makeDirectory(std::string const& path)
+void DQMStore::makeDirectory(std::string const& path) // PRIVATE
 {
   std::string prev;
   std::string subdir;
@@ -1539,49 +1538,43 @@ void DQMStore::getContents(std::vector<std::string>& into,
   into.reserve(dirs_.size());
 
   auto me = data_.end();
-  auto di = dirs_.begin();
-  auto de = dirs_.end();
-  for (; di != de; ++di)
-    {
-      MonitorElement proto(&*di, std::string());
-      auto mi = data_.lower_bound(proto);
-      auto m = mi;
-      size_t sz = di->size() + 2;
-      size_t nfound = 0;
-      for (; m != me && isSubdirectory(*di, *m->data_.dirname); ++m)
-        if (*di == *m->data_.dirname)
-          {
-            sz += m->data_.objname.size() + 1;
-            ++nfound;
-          }
+  for (auto const& dir : dirs_) {
+    if (!showContents) {
+      into.emplace_back(dir+':');
+      continue;
+    }
+
+    MonitorElement proto(&dir, std::string());
+    auto mi = data_.lower_bound(proto);
+    auto m = mi;
+    size_t sz = dir.size() + 2;
+    size_t nfound = 0;
+    for (; m != me && isSubdirectory(dir, *m->data_.dirname); ++m) {
+      if (dir == *m->data_.dirname) {
+        sz += m->data_.objname.size() + 1;
+        ++nfound;
+      }
+    }
 
     if (!nfound)
       continue;
 
-    auto istr
-      = into.insert(into.end(), std::string());
+    std::string str;
+    str.reserve(sz);
+    str += dir;
+    str += ':';
 
-    if (showContents) {
-      istr->reserve(sz);
+    for (sz = 0; mi != m; ++mi) {
+      if (dir != *mi->data_.dirname)
+        continue;
 
-      *istr += *di;
-      *istr += ':';
-      for (sz = 0; mi != m; ++mi) {
-        if (*di != *mi->data_.dirname)
-          continue;
+      if (sz > 0)
+        str += ',';
 
-        if (sz > 0)
-          *istr += ',';
-
-        *istr += mi->data_.objname;
-        ++sz;
-      }
+      str += mi->data_.objname;
+      ++sz;
     }
-    else {
-      istr->reserve(di->size() + 2);
-      *istr += *di;
-      *istr += ':';
-    }
+    into.push_back(std::move(str));
   }
 }
 
@@ -1627,18 +1620,17 @@ void DQMStore::getAllTags(std::vector<std::string>& into) const
   into.reserve(dirs_.size());
 
   auto me = data_.end();
-  auto di = dirs_.begin();
-  auto de = dirs_.end();
   char tagbuf[32]; // more than enough for '/' and up to 10 digits
 
-  for (; di != de; ++di) {
-    MonitorElement proto(&*di, std::string());
+  for (auto const& dir : dirs_) {
+    MonitorElement proto(&dir, std::string());
     auto mi = data_.lower_bound(proto);
     auto m = mi;
-    size_t sz = di->size() + 2;
+    size_t sz = dir.size() + 2;
     size_t nfound = 0;
-    for (; m != me && isSubdirectory(*di, *m->data_.dirname); ++m)
-      if (*di == *m->data_.dirname && (m->data_.flags & DQMNet::DQM_PROP_TAGGED)) {
+    for (; m != me && isSubdirectory(dir, *m->data_.dirname); ++m)
+      if (dir == *m->data_.dirname &&
+          (m->data_.flags & DQMNet::DQM_PROP_TAGGED)) {
         // the tags count for '/' + up to 10 digits, otherwise ',' + ME name
         sz += 1 + m->data_.objname.size() + 11;
         ++nfound;
@@ -1647,21 +1639,19 @@ void DQMStore::getAllTags(std::vector<std::string>& into) const
     if (!nfound)
       continue;
 
-    auto istr
-      = into.insert(into.end(), std::string());
+    auto& str = *into.insert(into.end(), std::string());
+    str.reserve(sz);
 
-    istr->reserve(sz);
-
-    *istr += *di;
-    *istr += ':';
+    str += dir;
+    str += ':';
     for (sz = 0; mi != m; ++mi) {
-      if (*di == *m->data_.dirname &&
+      if (dir == *m->data_.dirname &&
           (m->data_.flags & DQMNet::DQM_PROP_TAGGED)) {
         sprintf(tagbuf, "/%u", mi->data_.tag);
         if (sz > 0)
-          *istr += ',';
-        *istr += m->data_.objname;
-        *istr += tagbuf;
+          str += ',';
+        str += m->data_.objname;
+        str += tagbuf;
         ++sz;
       }
     }
@@ -2621,7 +2611,7 @@ unsigned int DQMStore::readDirectory(TFile* file, bool const overwrite,
                                      std::string const& onlypath,
                                      std::string const& prepend,
                                      std::string const& curdir,
-                                     OpenRunDirs stripdirs)
+                                     OpenRunDirs stripdirs) // PRIVATE
 {
   unsigned int ntot{};
   unsigned int count{};
@@ -2806,7 +2796,7 @@ bool DQMStore::readFile(std::string const& filename,
                         std::string const& onlypath /* ="" */,
                         std::string const& prepend /* ="" */,
                         OpenRunDirs const stripdirs /* =StripRunDirs */,
-                        bool const fileMustExist /* =true */)
+                        bool const fileMustExist /* =true */) // PRIVATE
 {
 
   if (verbose_)
