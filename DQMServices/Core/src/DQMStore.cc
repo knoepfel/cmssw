@@ -1594,7 +1594,7 @@ MonitorElement* DQMStore::findObject(std::string const& dir,
                   name.c_str());
 
   // auto meit = safe_data_.find(KeyType{id.streamId, id.moduleId});
-  // if (meit == safe_data_.cend()) {
+  // if (meit != safe_data_.cend()) {
   //   return nullptr;
   // }
 
